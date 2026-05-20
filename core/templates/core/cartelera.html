@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5 rounded shadow">
+    <div class="hero-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+    
+    <div class="hero-content position-relative z-index-2 px-3 animate-fade-in">
+        <h1 class="display-3 fw-bold mb-2 text-shadow">Residencia Estudiantil UNI</h1>
+        <h3 class="lead fs-3 text-warning fw-semibold mb-4">Rol de Limpieza Automatizado</h3>
+        <p class="text-light opacity-75 max-w-md mx-auto small">Desplázate hacia abajo para consultar las asignaciones de esta semana en tiempo real.</p>
+        <div class="mt-4 animate-bounce">
+            <span class="fs-4">👇</span>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm main-content-box animate-reveal">
+    <div class="card-header bg-white py-3">
+        <h3 class="mb-0 text-center fw-bold text-dark">📅 Roles de Limpieza Asignados</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Turno</th>
+                        <th>Área / Tarea</th>
+                        <th>Estudiante Asignado</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for turno in turnos %}
+                    <tr>
+                        <td>{{ turno.fecha|date:"d M Y" }}</td>
+                        <td>{{ turno.get_turno_horario_display }}</td>
+                        <td>{{ turno.tarea.area.get_nombre_display }} - {{ turno.tarea.nombre_tarea }}</td>
+                        <td><strong>{{ turno.estudiante.nombre }}</strong></td>
+                        <td>
+                            {% if turno.estado == 'PENDIENTE' %}
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            {% elif turno.estado == 'CUMPLIDO' %}
+                                <span class="badge bg-success">Cumplido</span>
+                            {% else %}
+                                <span class="badge bg-danger">Faltó</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">Aún no hay turnos generados para esta semana.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        height: 70vh; /* Ocupa el 70% de la pantalla inicial */
+        background-color: #111;
+    }
+    
+    .hero-bg {
+        
+        background-image: url("{% static 'fondo-uni.png' %}");
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+        will-change: transform, opacity;
+    }
+    
+    .z-index-2 { z-index: 2; }
+    
+    .text-shadow {
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Animación de rebote de la flecha */
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+
+    /* Animación suave de entrada al cargar */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 1s ease-out forwards;
+    }
+</style>
+
+<script>
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.scrollY;
+        const heroBg = document.querySelector('.hero-bg');
+        const heroContent = document.querySelector('.hero-content');
+        
+        if (heroBg && heroContent) {
+            // Factor de velocidad del zoom (aumenta el tamaño un 0.15% por cada píxel de bajada)
+            let scaleValue = 1 + (scrollPosition * 0.0015);
+            // Factor de desvanecimiento (baja la opacidad proporcionalmente)
+            let opacityValue = 1 - (scrollPosition * 0.0035);
+            
+            // Ponemos límites para que no se altere si bajan demasiado rápido
+            if (opacityValue < 0) opacityValue = 0;
+            if (scaleValue > 1.8) scaleValue = 1.8;
+            
+            // Aplicamos los efectos en tiempo real mediante CSS dinámico
+            heroBg.style.transform = `scale(${scaleValue})`;
+            heroBg.style.opacity = opacityValue;
+            
+            // El texto también se va desvaneciendo y sube sutilmente
+            heroContent.style.opacity = opacityValue;
+            heroContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+        }
+    });
+</script>
+{% endblock %}
