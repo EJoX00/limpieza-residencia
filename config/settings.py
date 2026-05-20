@@ -73,15 +73,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Configuración de Base de Datos Inteligente
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# Si estamos en Render, sobreescribimos la conexión con la base de datos externa
+if os.environ.get('RENDER'):
+    DATABASES['default'] = dj_database_url.config(
+        default='postgresql://postgres:Bajoterra00?@db.ptleirlgzwkfmhxgbpno.supabase.co:5432/postgres',
+        conn_max_age=600
+    )
 
 
 # Password validation
@@ -129,6 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'panel_control'
 LOGIN_URL = 'login'
 
+import dj_database_url
 import os
 
 # Configuración obligatoria para que internet reconozca tus imágenes y CSS
