@@ -127,12 +127,19 @@ def acc_generar_rol(request):
         fecha_str = request.POST.get('fecha')
         turno_horario = request.POST.get('turno_horario')
         
+        # 1. Validar que los campos no vengan vacíos desde el HTML
         if not fecha_str or not turno_horario:
-            messages.error(request, "Por favor selecciona una fecha y un turno válidos.")
+            messages.error(request, "Error: Por favor selecciona una fecha y un turno válidos.")
             return redirect(f'/panel/?area_id={area.id}' if request.user.is_superuser else 'panel_control')
             
-        fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        try:
+            # 2. Convertir la fecha atrapando fallos de formato
+            fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, f"Error: El formato de fecha recibido ('{fecha_str}') no es válido. Usa el selector del navegador.")
+            return redirect(f'/panel/?area_id={area.id}' if request.user.is_superuser else 'panel_control')
         
+        # 3. Ejecutar el robot de servicios atrapando fallos internos (Falta de tareas o personal)
         try:
             generar_turnos_para_fecha(fecha, turno_horario, area)
             
@@ -145,7 +152,8 @@ def acc_generar_rol(request):
             
             messages.success(request, f"¡Rol generado con éxito para el día {fecha_str}!")
         except Exception as e:
-            messages.error(request, str(e))
+            # Si services.py tira un error, se muestra de forma elegante en la barra roja sin romper la web
+            messages.error(request, f"Aviso del sistema: {str(e)}")
             
         if request.user.is_superuser:
             return redirect(f'/panel/?area_id={area.id}')
