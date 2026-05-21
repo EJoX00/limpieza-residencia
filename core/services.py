@@ -1,12 +1,13 @@
 import datetime
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Count, Q
 from .models import Estudiante, ExcepcionHorario, TurnoAsignado, Tarea
 
 def generar_turnos_para_fecha(fecha, turno_horario, area):
     """
-    Busca de forma automática y justa a los estudiantes necesarios 
+    Busca de forma automática, justa e infinita a los estudiantes necesarios 
     para cubrir las tareas de un área en una fecha y turno específicos.
+    Implementa reinicio automático de rondas basado en conteo acumulativo.
     Soporta asignación múltiple (8 personas) para Áreas Verdes.
     """
     tareas = Tarea.objects.filter(area=area)
@@ -23,34 +24,42 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
             repeticiones = 8 if area.nombre == 'AREAS_V' else 1
             
             for _ in range(repeticiones):
-                # 1. Filtrar estudiantes según el tipo de área (Género o General)
-                estudiantes_qs = Estudiante.objects.all()
+                # 1. 🚀 LÓGICA DE RONDAS INFINITAS: Contamos las asistencias totales de cada estudiante
+                # Se ordena primero al que menos veces ha limpiado en la historia del sistema.
+                # El '?' baraja aleatoriamente a los estudiantes que estén empatados (ej: al inicio con 0 faltas/turnos).
+                estudiantes_qs = Estudiante.objects.annotate(
+                    total_turnos=Count('turnoasignado')
+                )
+
+                # Filtrar según las reglas de Género o General del Área
                 if area.nombre == 'BANOS_H':
-                    estudiantes_qs = estudiantes_qs.filter(genero='M').order_by('posicion_cola_banos')
+                    estudiantes_qs = estudiantes_qs.filter(genero='M').order_by('total_turnos', '?')
                 elif area.nombre == 'BANOS_M':
-                    estudiantes_qs = estudiantes_qs.filter(genero='F').order_by('posicion_cola_banos')
+                    estudiantes_qs = estudiantes_qs.filter(genero='F').order_by('total_turnos', '?')
                 else:
-                    # Áreas Verdes: entran todos ordenados por su respectiva cola
-                    estudiantes_qs = estudiantes_qs.order_by('posicion_cola_verdes')
+                    # Áreas Verdes: entran todos por igual ordenados por carga de trabajo acumulada
+                    estudiantes_qs = estudiantes_qs.order_by('total_turnos', '?')
 
                 estudiante_elegido = None
 
                 # 2. Evaluar quién cumple con los requisitos mínimos de disponibilidad
                 for estudiante in estudiantes_qs:
-                    # REGLA 1: Excepciones de horario de clases
+                    # REGLA 1: Excepciones de horario de clases (Evita que limpien si están en la universidad)
                     tiene_excepcion = ExcepcionHorario.objects.filter(
                         estudiante=estudiante,
-                        dia_semana=dia_semana_num,
+                        dia_semana=str(dia_semana_num),
                         turno=turno_horario
                     ).exists()
                     if tiene_excepcion:
                         continue 
 
-                    # REGLA 2: Exclusión mutua (No repetir el mismo día en nada)
+                    # REGLA 2: Exclusión mutua (No repetir al mismo estudiante en varias tareas el mismo día)
+                    # OJO: Excluimos de la validación a los ya asignados en ESTA misma iteración para que no se dupliquen
                     ya_limpia_hoy = TurnoAsignado.objects.filter(
                         estudiante=estudiante,
                         fecha=fecha
-                    ).exists()
+                    ).exists() or any(t.estudiante == estudiante for t in turnos_creados)
+                    
                     if ya_limpia_hoy:
                         continue 
 
@@ -58,13 +67,14 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                     estudiante_elegido = estudiante
                     break
 
+                # Si recorrió todo el universo de estudiantes y nadie puede (caso extremo de bloqueos masivos)
                 if not estudiante_elegido:
                     raise Exception(
                         f"Falta de personal: No hay suficientes estudiantes disponibles para "
                         f"completar los cupos requeridos en '{tarea.nombre_tarea}' el {fecha} ({turno_horario})."
                     )
 
-                # 3. Crear el turno asignado pendiente
+                # 3. Crear el turno asignado pendiente directo en Supabase
                 nuevo_turno = TurnoAsignado.objects.create(
                     estudiante=estudiante_elegido,
                     tarea=tarea,
@@ -74,14 +84,7 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                 )
                 turnos_creados.append(nuevo_turno)
 
-                # 4. Rotación Justa: Mandar al estudiante seleccionado al final de la cola
-                if area.nombre in ['BANOS_H', 'BANOS_M']:
-                    max_pos = Estudiante.objects.all().aggregate(Max('posicion_cola_banos'))['posicion_cola_banos__max'] or 0
-                    estudiante_elegido.posicion_cola_banos = max_pos + 1
-                else:
-                    max_pos = Estudiante.objects.all().aggregate(Max('posicion_cola_verdes'))['posicion_cola_verdes__max'] or 0
-                    estudiante_elegido.posicion_cola_verdes = max_pos + 1
-                
-                estudiante_elegido.save()
+                # NOTA: Ya no hace falta modificar ni guardar la 'posicion_cola' de forma manual,
+                # ya que Django calculará la prioridad en tiempo real en la siguiente vuelta contando los turnos.
 
     return turnos_creados
