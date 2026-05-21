@@ -89,7 +89,7 @@ DATABASES = {
 # Si estamos en Render, sobreescribimos la conexión con la base de datos externa
 if os.environ.get('RENDER'):
     DATABASES['default'] = dj_database_url.config(
-        default='postgresql://postgres.ptleirlgzwkfmhxgbpno:contraseña2026@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
+        default='postgresql://postgres.ptleirlgzwkfmhxgbpno:contraseña2026@aws-1-us-east-1.pooler.supabase.com:6543/postgres',
         conn_max_age=600
     )
 
