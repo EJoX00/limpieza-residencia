@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">✏️ Editar Datos de {{ estudiante.nombre }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nombre Completo</label>
+                            <input type="text" name="nombre" value="{{ form.nombre.value|default:estudiante.nombre }}" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Número de Carnet</label>
+                            <input type="text" name="carnet" value="{{ form.carnet.value|default:estudiante.carnet }}" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Carrera</label>
+                            <input type="text" name="carrera" value="{{ form.carrera.value|default:estudiante.carrera }}" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Habitación</label>
+                            <input type="text" name="habitacion" value="{{ form.habitacion.value|default:estudiante.habitacion }}" class="form-control" required>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'panel_control' %}" class="btn btn-light">Cancelar</a>
+                            <button type="submit" class="btn btn-info text-white">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
