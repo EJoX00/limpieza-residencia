@@ -88,7 +88,13 @@
                                 <br>
                                 <small class="text-muted">{{ est.carrera }} | {{ est.carnet }}</small>
                             </div>
-                            <span class="badge bg-info text-dark">Hab: {{ est.habitacion }}</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-info text-dark me-2">Hab: {{ est.habitacion }}</span>
+                                
+                                <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-sm btn-outline-info py-0 px-1" title="Editar datos"><i class="fas fa-edit"></i></a>
+                                
+                                <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }} del sistema?');" title="Eliminar becado"><i class="fas fa-trash-alt"></i></a>
+                            </div>
                         </li>
                     {% empty %}
                         <li class="list-group-item text-muted text-center small">No hay estudiantes en esta selección.</li>
