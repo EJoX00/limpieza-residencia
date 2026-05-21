@@ -80,7 +80,8 @@ def panel_control(request):
             Q(habitacion__icontains=query_busqueda)
         ).order_by('habitacion', 'nombre')
     else:
-        lista_estudiantes = base_estudiantes.order_by('habitacion', 'nombre')[:10]
+        # CORRECCIÓN AQUÍ: Quitamos el annotate del else para que muestre a todos los que tienen 0 faltas
+        lista_estudiantes = Estudiante.objects.all().order_by('habitacion', 'nombre')[:50]
 
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
@@ -291,3 +292,40 @@ def g_codigo(request):
                 messages.success(request, f"Código '{codigo}' generado con éxito.")
                 
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
+
+@login_required
+def editar_estudiante(request, estudiante_id):
+    """Vista para modificar los datos de un becado."""
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    if request.method == 'POST':
+        form = EstudianteForm(request.POST, instance=estudiante)
+        if form.is_valid():
+            form.save()
+            
+            HistorialAccion.objects.create(
+                usuario=request.user,
+                accion=f"Editó los datos del estudiante {estudiante.nombre}.",
+                area_origen="Control Global"
+            )
+            messages.success(request, f"Datos de {estudiante.nombre} actualizados con éxito.")
+            return redirect('panel_control')
+    else:
+        form = EstudianteForm(instance=estudiante)
+    
+    return render(request, 'core/editar_estudiante.html', {'form': form, 'estudiante': estudiante})
+
+
+@login_required
+def borrar_estudiante(request, estudiante_id):
+    """Vista para eliminar por completo a un becado del sistema."""
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    
+    HistorialAccion.objects.create(
+        usuario=request.user,
+        accion=f"ELIMINÓ permanentemente al estudiante {estudiante.nombre} del sistema.",
+        area_origen="Control Global"
+    )
+    
+    messages.warning(request, f"El estudiante {estudiante.nombre} fue eliminado de las listas.")
+    estudiante.delete()
+    return redirect('panel_control')

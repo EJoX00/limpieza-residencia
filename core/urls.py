@@ -19,4 +19,7 @@ urlpatterns = [
     path('panel/guardar-manual/', views.g_manual, name='g_manual'),
    
     path('panel/guardar-codigo/', views.g_codigo, name='g_codigo'),
+
+    path('estudiante/editar/<int:estudiante_id>/', views.editar_estudiante, name='editar_estudiante'),
+    path('estudiante/borrar/<int:estudiante_id>/', views.borrar_estudiante, name='borrar_estudiante'),
 ]

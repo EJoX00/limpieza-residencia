@@ -1,0 +1,808 @@
+[
+  {
+    "model": "core.estudiante",
+    "pk": 61,
+    "fields": {
+      "nombre": "Norman Gabriel Rivas Hernández",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "4",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 62,
+    "fields": {
+      "nombre": "Rayo Angulo Freddy Steven",
+      "genero": "M",
+      "carnet": "2025-0333U",
+      "carrera": "Ingeniería de Sistemas",
+      "habitacion": "5",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 63,
+    "fields": {
+      "nombre": "Rayo Meza Eddy Santiago",
+      "genero": "M",
+      "carnet": "2025-1588U",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "5",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 64,
+    "fields": {
+      "nombre": "Solano Alemán Justin De Jesús",
+      "genero": "M",
+      "carnet": "2025-1577U",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "5",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 65,
+    "fields": {
+      "nombre": "Weishaupt Parrales Chris Andrew",
+      "genero": "M",
+      "carnet": "2025-1953U",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "5",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 66,
+    "fields": {
+      "nombre": "Valladares Hernández Kenneth Omar",
+      "genero": "M",
+      "carnet": "2025-3374U",
+      "carrera": "Arquitectura",
+      "habitacion": "6",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 67,
+    "fields": {
+      "nombre": "López Blandón Zinedine Yazed Kaladze Zidane",
+      "genero": "M",
+      "carnet": "2025-2622U",
+      "carrera": "Arquitectura",
+      "habitacion": "6",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 68,
+    "fields": {
+      "nombre": "Rostrán Torrez Elkin Aaron",
+      "genero": "M",
+      "carnet": "2025-1871U",
+      "carrera": "Arquitectura",
+      "habitacion": "6",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 69,
+    "fields": {
+      "nombre": "Sánchez Grijalba Rigoberto Octavio",
+      "genero": "M",
+      "carnet": "2025-0002U",
+      "carrera": "Arquitectura",
+      "habitacion": "6",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 70,
+    "fields": {
+      "nombre": "Samuel Jehuda Martínez Aguilar",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Química",
+      "habitacion": "7",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 71,
+    "fields": {
+      "nombre": "Brandom Josue Vela Hernánndez",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Química",
+      "habitacion": "7",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 72,
+    "fields": {
+      "nombre": "David Ali Rojas Molinares",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Química",
+      "habitacion": "7",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 73,
+    "fields": {
+      "nombre": "Denis David Fariña López",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Química",
+      "habitacion": "7",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 74,
+    "fields": {
+      "nombre": "Arauz Leiva Marco Antonio",
+      "genero": "M",
+      "carnet": "2025-0960U",
+      "carrera": "Ingeniería Mecánica",
+      "habitacion": "8",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 75,
+    "fields": {
+      "nombre": "Fajardo Gutiérrez Idel Jacing",
+      "genero": "M",
+      "carnet": "2025-1319U",
+      "carrera": "Ingeniería Industrial",
+      "habitacion": "8",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 76,
+    "fields": {
+      "nombre": "Marchena Avilés José Orlando",
+      "genero": "M",
+      "carnet": "2025-0281U",
+      "carrera": "Ingeniería Mecánica",
+      "habitacion": "8",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 77,
+    "fields": {
+      "nombre": "Sevilla Martínez Winston Oneyker",
+      "genero": "M",
+      "carnet": "2025-3200U",
+      "carrera": "Ingeniería Mecánica",
+      "habitacion": "8",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 78,
+    "fields": {
+      "nombre": "Alemán Alemán José Alexander",
+      "genero": "M",
+      "carnet": "2025-1027U",
+      "carrera": "Ingeniería Química",
+      "habitacion": "9",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 79,
+    "fields": {
+      "nombre": "Cundano Trujillo  Augusto Fernando",
+      "genero": "M",
+      "carnet": "2024-0374U",
+      "carrera": "Ingeniería en Economía y Negocios",
+      "habitacion": "9",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 80,
+    "fields": {
+      "nombre": "Gutiérrez Jaenz  Jordy Samir",
+      "genero": "M",
+      "carnet": "2025-2403U",
+      "carrera": "Ingeniería en Economía y Negocios",
+      "habitacion": "9",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 81,
+    "fields": {
+      "nombre": "Ramírez Traña Yosmar Lenin",
+      "genero": "M",
+      "carnet": "2025-3448U",
+      "carrera": "Ingeniería en Economía y Negocios",
+      "habitacion": "9",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 82,
+    "fields": {
+      "nombre": "González Valle Alvin Steven",
+      "genero": "M",
+      "carnet": "2024-1406U",
+      "carrera": "Ingeniería de Sistemas",
+      "habitacion": "10",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 83,
+    "fields": {
+      "nombre": "Martinez Aguilar Nissi Emmanuel",
+      "genero": "M",
+      "carnet": "2024-0868U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "10",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 84,
+    "fields": {
+      "nombre": "Rivera Matamoros Miguel Rafael",
+      "genero": "M",
+      "carnet": "2024-1109U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "10",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 85,
+    "fields": {
+      "nombre": "Sánchez Moreira José Alberto",
+      "genero": "M",
+      "carnet": "2024-0631U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "10",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 86,
+    "fields": {
+      "nombre": "Bermudez Salgado José David",
+      "genero": "M",
+      "carnet": "2024-1035U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "11",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 87,
+    "fields": {
+      "nombre": "Hernández Morán Bayardo Andrés",
+      "genero": "M",
+      "carnet": "2024-1152U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "11",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 88,
+    "fields": {
+      "nombre": "Ruiz Calderon Yefren Alexander",
+      "genero": "M",
+      "carnet": "2024-0411U",
+      "carrera": "Ingeniería Mecánica",
+      "habitacion": "11",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 89,
+    "fields": {
+      "nombre": "Skaling González Joshua Salvador",
+      "genero": "M",
+      "carnet": "2024-0376U",
+      "carrera": "Ingeniería Industrial",
+      "habitacion": "11",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 90,
+    "fields": {
+      "nombre": "Boza Quintanilla Alvaro Antonio",
+      "genero": "M",
+      "carnet": "2024-0563U",
+      "carrera": "Arquitectura",
+      "habitacion": "12",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 91,
+    "fields": {
+      "nombre": "Gonzalez Rostrán German Emanuel",
+      "genero": "M",
+      "carnet": "2024-1942U",
+      "carrera": "Ingeniería en Computación",
+      "habitacion": "12",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 92,
+    "fields": {
+      "nombre": "Sandoval Alvarez Rodrigo Javier",
+      "genero": "M",
+      "carnet": "2024-0686U",
+      "carrera": "Arquitectura",
+      "habitacion": "12",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 93,
+    "fields": {
+      "nombre": "Torrez Urbina Kevin Gael",
+      "genero": "M",
+      "carnet": "2024-1899U",
+      "carrera": "Ingeniería en Computación",
+      "habitacion": "12",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 94,
+    "fields": {
+      "nombre": "Cano Jeyson Josué",
+      "genero": "M",
+      "carnet": "2022-0067U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "13",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 95,
+    "fields": {
+      "nombre": "Florian Villavicencio Willian Javier",
+      "genero": "M",
+      "carnet": "2022-0131U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "13",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 96,
+    "fields": {
+      "nombre": "Rojas Murrillo Nair Jonás",
+      "genero": "M",
+      "carnet": "2022-0038U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "13",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 97,
+    "fields": {
+      "nombre": "Gabriel Jossué López Miranda",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "13",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 98,
+    "fields": {
+      "nombre": "Carballo Morales Jeriel Alexander",
+      "genero": "M",
+      "carnet": "2022-0599U",
+      "carrera": "Arquitectura",
+      "habitacion": "14",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 99,
+    "fields": {
+      "nombre": "Hernández Holman Saúl",
+      "genero": "M",
+      "carnet": "2019-1092U",
+      "carrera": "Arquitectura",
+      "habitacion": "14",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 100,
+    "fields": {
+      "nombre": "Mendoza Potoy Sergio Tomàs",
+      "genero": "M",
+      "carnet": "2022-0665U",
+      "carrera": "Arquitectura",
+      "habitacion": "14",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 101,
+    "fields": {
+      "nombre": "Suarez Estrada Milfred Froylan",
+      "genero": "M",
+      "carnet": "2023-0360U",
+      "carrera": "Arquitectura",
+      "habitacion": "14",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 102,
+    "fields": {
+      "nombre": "Aguilar Amador Oscar José",
+      "genero": "M",
+      "carnet": "2022-0464U",
+      "carrera": "Ingeniería Química",
+      "habitacion": "15",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 103,
+    "fields": {
+      "nombre": "Gonzales Rodríguez Dylan Wilfredo",
+      "genero": "M",
+      "carnet": "2023-0107U",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "15",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 104,
+    "fields": {
+      "nombre": "Silva Arostegui Cristhian Iván",
+      "genero": "M",
+      "carnet": "2022-0284U",
+      "carrera": "Ingeniería Química",
+      "habitacion": "15",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 105,
+    "fields": {
+      "nombre": "Zelaya Enghell Yosuaryn",
+      "genero": "M",
+      "carnet": "2022-0332U",
+      "carrera": "Ingeniería en Computación",
+      "habitacion": "15",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 106,
+    "fields": {
+      "nombre": "Baez Prado Delvin Antonio",
+      "genero": "M",
+      "carnet": "2022-0041U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "16",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 107,
+    "fields": {
+      "nombre": "Bonilla Altamirano Marlon Johargen",
+      "genero": "M",
+      "carnet": "2023-0894U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "16",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 108,
+    "fields": {
+      "nombre": "Garcìa Carvajal Silvio Rodolfo",
+      "genero": "M",
+      "carnet": "2023-0947U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "16",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 109,
+    "fields": {
+      "nombre": "Lechado Moreno Henry Isaac",
+      "genero": "M",
+      "carnet": "2023-0641U",
+      "carrera": "Ingeniería en Computación",
+      "habitacion": "16",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 110,
+    "fields": {
+      "nombre": "Arley Espinales Jeferson Mauricio",
+      "genero": "M",
+      "carnet": "2023-0075U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "18",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 111,
+    "fields": {
+      "nombre": "Gonzalez Gonzalez Jasser Josué",
+      "genero": "M",
+      "carnet": "22-10045SU",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "18",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 112,
+    "fields": {
+      "nombre": "Laguna Martinez Abel Isaí",
+      "genero": "M",
+      "carnet": "2023-0278U",
+      "carrera": "Ingeniería Eléctrica",
+      "habitacion": "18",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 113,
+    "fields": {
+      "nombre": "Ríos García Eliel Josadac",
+      "genero": "M",
+      "carnet": "2023-1237U",
+      "carrera": "Ingeniería Química",
+      "habitacion": "18",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 114,
+    "fields": {
+      "nombre": "Russell Antonio Ferretty Collado",
+      "genero": "M",
+      "carnet": "2025-3273U",
+      "carrera": "Ingeniería Mecánica",
+      "habitacion": "30",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 115,
+    "fields": {
+      "nombre": "Otoniel de Jesús Burgos González",
+      "genero": "M",
+      "carnet": "2025-3543U",
+      "carrera": "Ingeniería Agrícola",
+      "habitacion": "30",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 116,
+    "fields": {
+      "nombre": "Ríos García Jesua Jahdiel",
+      "genero": "M",
+      "carnet": "2025-0738U",
+      "carrera": "Ingeniería Electrónica",
+      "habitacion": "30",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 117,
+    "fields": {
+      "nombre": "Centeno García José Ángel",
+      "genero": "M",
+      "carnet": "2025-1745U",
+      "carrera": "Ingeniería en Computación",
+      "habitacion": "30",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 118,
+    "fields": {
+      "nombre": "Maxel Styb Corea Rayo",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "31",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 119,
+    "fields": {
+      "nombre": "Abner Isai Tobal",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Ingeniería Civil",
+      "habitacion": "31",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 120,
+    "fields": {
+      "nombre": "Keller Jasmir Rodriquez Pérez",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Arquitectura",
+      "habitacion": "31",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 121,
+    "fields": {
+      "nombre": "Fernando José Avendaño",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Arquitectura",
+      "habitacion": "31",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  },
+  {
+    "model": "core.estudiante",
+    "pk": 122,
+    "fields": {
+      "nombre": "Yowal Josué Ortega Martínez",
+      "genero": "M",
+      "carnet": "N/A",
+      "carrera": "Arquitectura",
+      "habitacion": "32",
+      "posicion_cola_banos": 0,
+      "posicion_cola_verdes": 0
+    }
+  }
+]
