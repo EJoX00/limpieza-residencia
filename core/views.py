@@ -80,7 +80,7 @@ def panel_control(request):
             Q(habitacion__icontains=query_busqueda)
         ).order_by('habitacion', 'nombre')
     else:
-        # CORRECCIÓN AQUÍ: Quitamos el annotate del else para que muestre a todos los que tienen 0 faltas
+        # 🔥 EL CAMBIO DEFINITIVO: Traerlos directo del modelo Estudiante sin "annotate" para saltarnos el bug
         lista_estudiantes = Estudiante.objects.all().order_by('habitacion', 'nombre')[:50]
 
     form_estudiante = EstudianteForm()
