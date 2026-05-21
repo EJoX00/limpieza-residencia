@@ -89,7 +89,7 @@ DATABASES = {
 # Si estamos en Render, sobreescribimos la conexión con la base de datos externa
 if os.environ.get('RENDER'):
     DATABASES['default'] = dj_database_url.config(
-        default='postgresql://postgres:Bajoterra00?@db.ptleirlgzwkfmhxgbpno.supabase.co:5432/postgres',
+        default='postgresql://postgres:contraseña2026@db.ptleirlgzwkfmhxgbpno.supabase.co:5432/postgres',
         conn_max_age=600
     )
 
