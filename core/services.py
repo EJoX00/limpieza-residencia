@@ -26,7 +26,7 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                 # Si es áreas verdes, obligamos al bot a buscar 4 varones (M) y 4 mujeres (F)
                 cupos_requeridos = [{'genero': 'M'} for _ in range(4)] + [{'genero': 'F'} for _ in range(4)]
             elif area.nombre == 'JARDINES':
-                # 🏡 NUEVO: Si es Jardines Internos, obligamos una patrulla de 2 varones y 2 mujeres
+                # 🏡 Si es Jardines Internos, obligamos una patrulla de 2 varones y 2 mujeres
                 cupos_requeridos = [{'genero': 'M'} for _ in range(2)] + [{'genero': 'F'} for _ in range(2)]
             else:
                 # Si son baños, se necesita 1 sola persona por tarea y el género va amarrado al baño correspondiente
@@ -35,7 +35,7 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
             
             # El ciclo se ejecutará la cantidad de cupos definidos arriba
             for cupo in cupos_requeridos:
-                # 🚀 LÓGICA DE RONDAS INFINITAS: Contamos las asistencias totales filtrando por el género del cupo actual
+                # 🚀 LÓGICA DE RONDAS INFINITAS
                 estudiantes_qs = Estudiante.objects.annotate(
                     total_turnos=Count('turnoasignado')
                 ).filter(genero=cupo['genero']).order_by('total_turnos', '?')
@@ -53,16 +53,16 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                     if tiene_excepcion:
                         continue 
 
-                    # REGLA 2: Exclusión mutua (No repetir al mismo estudiante hoy)
+                    # REGLA 2: Exclusión mutua (CORREGIDO: student ➡️ estudiante)
                     ya_limpia_hoy = TurnoAsignado.objects.filter(
-                        student=estudiante, # Nota: Si tu modelo usa 'estudiante', mantenlo así
+                        estudiante=estudiante, 
                         fecha=fecha
                     ).exists() or any(t.estudiante == estudiante for t in turnos_creados)
                     
                     if ya_limpia_hoy:
                         continue 
 
-                    # Candidato ideal encontrado que cumple con el género y el horario
+                    # Candidato ideal encontrado
                     estudiante_elegido = estudiante
                     break
 
