@@ -2,52 +2,122 @@
 {% load static %}
 
 {% block content %}
+<style>
+    /* 📋 DISEÑO PROFESIONAL MINIMALISTA PARA LA CARTELERA PUBLICAPLANA */
+    .hero-section { 
+        background-color: #0f172a !important; 
+        height: 35vh !important; 
+        border-bottom: 1px solid #1e293b;
+    }
+    .nav-pills { 
+        background-color: #f1f5f9 !important; 
+        padding: 4px; 
+        border-radius: 6px; 
+    }
+    .nav-pills .nav-link { 
+        color: #64748b !important; 
+        font-weight: 500; 
+        font-size: 0.875rem;
+        border-radius: 4px;
+        transition: all 0.15s ease;
+    }
+    .nav-pills .nav-link.active { 
+        background-color: #ffffff !important; 
+        color: #0f172a !important; 
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important; 
+    }
+    .table th { 
+        background-color: #f8fafc; 
+        color: #475569; 
+        text-transform: uppercase; 
+        font-size: 0.725rem; 
+        letter-spacing: 0.05em; 
+        border-bottom: 1px solid #e2e8f0 !important; 
+        font-weight: 600;
+    }
+    .table td {
+        padding: 14px 16px !important;
+        font-size: 0.875rem;
+        border-bottom: 1px solid #f1f5f9 !important;
+    }
+    .card-header { 
+        background-color: #ffffff !important; 
+        border-bottom: 1px solid #e2e8f0 !important; 
+        color: #0f172a !important; 
+        font-weight: 600; 
+    }
+    .btn-primary { 
+        background-color: #2563eb !important; 
+        border-color: #2563eb !important; 
+        border-radius: 5px !important; 
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #1d4ed8 !important;
+    }
+    
+    /* Parches sutiles para los estados de asistencia (Menos saturados) */
+    .badge-status {
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+    .bg-success { background-color: #10b981 !important; color: #ffffff !important; }
+    .bg-danger { background-color: #ef4444 !important; color: #ffffff !important; }
+    .bg-warning { background-color: #f59e0b !important; color: #ffffff !important; }
+</style>
+
 <div class="position-fixed top-0 end-0 pe-4 pt-3 d-flex align-items-center gap-2" style="z-index: 1060;">
     <a href="{% url 'cartelera_publica' %}" 
-       class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center"
-       style="width: 48px; height: 48px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15);"
+       class="btn btn-light shadow-sm d-flex align-items-center justify-content-center"
+       style="width: 42px; height: 42px; border-radius: 50% !important; border: 1px solid #e2e8f0;"
        title="Ver Cartelera Pública">
-        <i class="fas fa-home text-white fs-5"></i>
+        <i class="fas fa-home text-secondary"></i>
     </a>
-    <button class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" 
+
+    <button class="btn btn-light shadow-sm d-flex align-items-center justify-content-center" 
+            style="width: 42px; height: 42px; border-radius: 50% !important; border: 1px solid #e2e8f0;"
             type="button" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#menuLateralAdmin" 
             aria-controls="menuLateralAdmin">
-        <i class="fas fa-bars text-white fs-5"></i>
+        <i class="fas fa-bars text-secondary"></i>
     </button>
 </div>
 
-<div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
-    <div class="offcanvas-header border-bottom border-secondary">
-        <h5 class="offcanvas-title fw-bold" id="menuLateralAdminLabel">⚙️ Consola de Acceso</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<div class="offcanvas offcanvas-end border-start" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
+    <div class="offcanvas-header border-bottom">
+        <h6 class="offcanvas-title fw-bold text-dark" id="menuLateralAdminLabel" style="letter-spacing: 0.03em;">Consola de Acceso</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between py-4">
         <div class="d-grid gap-3">
             {% if user.is_authenticated %}
-                <div class="bg-secondary bg-opacity-25 p-3 rounded border border-secondary text-center">
-                    <span class="small text-muted d-block">Administrador Activo</span>
-                    <strong class="text-warning fs-5">👤 Admin. E.Rios</strong>
+                <div class="p-3 rounded text-center" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                    <span class="small text-muted d-block mb-1">Administrador Activo</span>
+                    <strong class="text-dark">Admin. {{ user.username }}</strong>
                 </div>
-                <a href="{% url 'panel_control' %}" class="btn btn-success fw-bold py-2.5 shadow-sm text-start">
+                <a href="{% url 'panel_control' %}" class="btn btn-primary fw-medium py-2 shadow-sm text-start">
                     <i class="fas fa-th-large me-2"></i> Mi Panel de Área
                 </a>
             {% else %}
                 <div class="text-muted small text-center px-2">Accede a la consola de administración de la residencia para gestionar turnos.</div>
-                <a href="{% url 'login' %}" class="btn btn-outline-light fw-bold py-2.5 text-start">
+                <a href="{% url 'login' %}" class="btn btn-outline-dark fw-medium py-2 text-start">
                     <i class="fas fa-sign-in-alt me-2 text-primary"></i> Ingresar al Sistema
                 </a>
-                <a href="{% url 'registro_admin' %}" class="btn btn-primary fw-bold py-2.5 shadow-sm text-start">
+                <a href="{% url 'registro_admin' %}" class="btn btn-dark fw-medium py-2 shadow-sm text-start">
                     <i class="fas fa-user-plus me-2"></i> Registro Admin
                 </a>
             {% endif %}
         </div>
+
         {% if user.is_authenticated %}
-        <div class="d-grid border-top border-secondary pt-4">
+        <div class="d-grid border-top pt-4">
             <form action="{% url 'logout' %}" method="POST" class="d-grid">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-outline-danger fw-bold py-2.5"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
+                <button type="submit" class="btn btn-outline-danger fw-medium py-2"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
             </form>
         </div>
         {% endif %}
@@ -56,69 +126,64 @@
 
 <div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5">
     <div class="hero-bg position-absolute top-0 start-0 w-100 h-100"></div>
-    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
-    <div class="hero-content position-relative z-index-2 px-3 animate-fade-in">
-        <h1 class="display-3 fw-bold mb-2 text-shadow">Residencia Estudiantil UNI</h1>
-        <h3 class="lead fs-3 text-warning fw-semibold mb-4">Rol de Limpieza Automatizado</h3>
-        <p class="text-light opacity-75 max-w-md mx-auto small">Desplázate hacia abajo para consultar las asignaciones de esta semana en tiempo real.</p>
-        <div class="mt-4 animate-bounce">
-            <span class="fs-4">👇</span>
-        </div>
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 opacity-20" style="background-color: #000;"></div>
+    <div class="hero-content position-relative z-index-2 px-3">
+        <h2 class="fw-bold mb-2" style="font-size: 2.15rem; letter-spacing: -0.02em; color: #ffffff !important;">Residencia Estudiantil UNI</h2>
+        <p class="lead fs-6 text-muted mb-0 fw-normal" style="color: #94a3b8 !important;">Control General de Asignaciones de Limpieza</p>
     </div>
 </div>
 
 <div class="container px-4">
-    <div class="row mb-4 align-items-center text-center text-md-start">
+    <div class="row mb-4 align-items-center text-center text-md-start g-3">
         <div class="col-md-8">
-            <h2 class="fw-bold text-dark">📊 Roles de Limpieza Asignados</h2>
-            <p class="text-muted">Filtra rápido seleccionando tu área correspondiente abajo.</p>
+            <h5 class="fw-bold text-dark mb-1">Roles de Limpieza Asignados</h5>
+            <p class="text-muted small mb-0">Seleccione el área correspondiente para consultar los turnos.</p>
         </div>
-        <div class="col-md-4 text-md-end text-center mt-2 mt-md-0">
-            <button type="button" class="btn btn-primary fw-bold shadow py-2 px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalCalendarioBurbuja">
-                <i class="fas fa-calendar-alt me-2"></i> Ver Vista Calendario 📅
+        <div class="col-md-4 text-md-end text-center">
+            <button type="button" class="btn btn-outline-dark py-2 px-3" data-bs-toggle="modal" data-bs-target="#modalCalendariaBurbuja">
+                <i class="fas fa-calendar-alt me-2"></i> Vista de Calendario
             </button>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0 mb-4 bg-light">
-        <div class="card-body py-3">
-            <div class="input-group">
-                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                <input type="text" id="buscadorCartelera" class="form-control border-start-0" placeholder="Escribe tu nombre o número de habitación para filtrar rápido...">
+    <div class="card mb-4 bg-white shadow-sm border">
+        <div class="card-body p-2">
+            <div class="input-group border-0">
+                <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-search"></i></span>
+                <input type="text" id="buscadorCartelera" class="form-control border-0 bg-white" placeholder="Escribe tu nombre o número de habitación para filtrar rápido...">
             </div>
         </div>
     </div>
 
-    <ul class="nav nav-pills nav-justified mb-4 shadow-sm rounded bg-white p-1" id="tabCartelera" role="tablist">
+    <ul class="nav nav-pills nav-justified mb-4" id="tabCartelera" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active fw-bold text-uppercase py-2.5" id="hombres-tab" data-bs-toggle="tab" data-bs-target="#sec-hombres" type="button" role="tab">
-                🚹 Baño Hombres
+            <button class="nav-link active" id="hombres-tab" data-bs-toggle="tab" data-bs-target="#sec-hombres" type="button" role="tab">
+                Baño Hombres
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link fw-bold text-uppercase py-2.5" id="mujeres-tab" data-bs-toggle="tab" data-bs-target="#sec-mujeres" type="button" role="tab">
-                🚺 Baño Mujeres
+            <button class="nav-link" id="mujeres-tab" data-bs-toggle="tab" data-bs-target="#sec-mujeres" type="button" role="tab">
+                Baño Mujeres
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link fw-bold text-uppercase py-2.5" id="verdes-tab" data-bs-toggle="tab" data-bs-target="#sec-verdes" type="button" role="tab">
-                🌳 Áreas Verdes
+            <button class="nav-link" id="verdes-tab" data-bs-toggle="tab" data-bs-target="#sec-verdes" type="button" role="tab">
+                Áreas Verdes
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link fw-bold text-uppercase py-2.5" id="jardines-tab" data-bs-toggle="tab" data-bs-target="#sec-jardines" type="button" role="tab">
-                🏡 Jardines Internos
+            <button class="nav-link" id="jardines-tab" data-bs-toggle="tab" data-bs-target="#sec-jardines" type="button" role="tab">
+                Jardines Internos
             </button>
         </li>
     </ul>
 
     <div class="tab-content pb-5" id="contenidoCartelera">
         <div class="tab-pane fade show active" id="sec-hombres" role="tabpanel">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white fw-bold">📅 Sección Varones</div>
+            <div class="card border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Turno</th>
@@ -132,16 +197,20 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_H' %}
                                 <tr class="fila-turno" data-area="BANOS_H" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                    <td><span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ turno.get_estado_display }}</span></td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -150,11 +219,10 @@
         </div>
 
         <div class="tab-pane fade" id="sec-mujeres" role="tabpanel">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white fw-bold">📅 Sección Damas</div>
+            <div class="card border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Turno</th>
@@ -168,16 +236,20 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_M' %}
                                 <tr class="fila-turno" data-area="BANOS_M" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                    <td><span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ turno.get_estado_display }}</span></td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -186,11 +258,10 @@
         </div>
 
         <div class="tab-pane fade" id="sec-verdes" role="tabpanel">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white fw-bold">📅 Patios y Exteriores</div>
+            <div class="card border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Turno</th>
@@ -204,16 +275,20 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'AREAS_V' %}
                                 <tr class="fila-turno" data-area="AREAS_V" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                    <td><span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ turno.get_estado_display }}</span></td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-success fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -222,11 +297,10 @@
         </div>
 
         <div class="tab-pane fade" id="sec-jardines" role="tabpanel">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white fw-bold">📅 Jardines Internos (Patrulla Mixta)</div>
+            <div class="card border-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Turno</th>
@@ -240,38 +314,41 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'JARDINES' %}
                                 <tr class="fila-turno" data-area="JARDINES" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-info fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                    <td><span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ turno.get_estado_display }}</span></td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-info fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta área.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<div class="modal fade" id="modalCalendarioBurbuja" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalCalendariaBurbuja" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title fw-bold"><i class="fas fa-calendar-alt text-warning me-2"></i>Calendario de Roles Mensual</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content border-0">
+            <div class="modal-header border-bottom">
+                <h6 class="modal-title fw-bold text-dark">Calendario de Cumplimiento Mensual</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3 bg-white">
-                <div class="alert alert-info py-2 small border-0 d-flex align-items-center gap-2">
-                    <span>💡 <strong>Tip:</strong> Los días marcados en <strong class="text-danger">Rojo</strong> representan fechas donde no hubo limpiezas completadas. Toca un día para ver los asignados.</span>
+                <div class="alert alert-warning border-0 py-2 small mb-3" style="background-color: #fffbeb; color: #b45309; font-size: 0.8rem;">
+                    Las celdas con tonalidades rojas indican fechas donde no se registraron cumplimientos. Toca un día para desplegar los detalles.
                 </div>
-                <div id="fullCalendarContenedor" style="max-height: 65vh;"></div>
+                <div id="fullCalendarContenedor" style="max-height: 60vh;"></div>
             </div>
         </div>
     </div>
@@ -280,43 +357,16 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <style>
-    .hero-section { height: 75vh; background-color: #111; margin-top: -16px; }
-    .hero-bg { background-image: url("{% static 'fondo-uni.png' %}"); background-size: cover; background-position: center; transition: transform 0.1s ease-out, opacity 0.1s ease-out; will-change: transform, opacity; }
-    .z-index-2 { z-index: 2; }
-    .text-shadow { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    .animate-bounce { animation: bounce 2s infinite; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
-    .nav-pills .nav-link { color: #495057; border: 1px solid transparent; background: none; transition: all 0.2s ease-in-out; }
-    .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
-    .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
-    .position-fixed .btn:hover { transform: scale(1.1); background-color: #000 !important; box-shadow: 0 8px 16px rgba(0,0,0,0.5) !important; transition: all 0.2s ease; }
-    .fc .fc-toolbar-title { font-size: 1.25rem !important; font-weight: bold !important; color: #212529; }
-    .fc .fc-button-primary { background-color: #212529 !important; border-color: #212529 !important; }
-    .fc .fc-button-primary:hover { background-color: #000 !important; }
-    .fc-daygrid-day.dia-vacio-rojo { background-color: #fce8e6 !important; } 
-    .fc-daygrid-day.dia-vacio-rojo .fc-daygrid-day-number { color: #c5221f !important; font-weight: bold; }
+    .fc .fc-toolbar-title { font-size: 1.1rem !important; font-weight: 600 !important; color: #0f172a; }
+    .fc .fc-button-primary { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #475569 !important; font-weight: 500 !important; font-size: 0.85rem !important; }
+    .fc .fc-button-primary:hover { background-color: #f8fafc !important; color: #0f172a !important; }
+    .fc .fc-button-active { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+    .fc-daygrid-day.dia-vacio-rojo { background-color: #fef2f2 !important; } 
+    .fc-daygrid-day.dia-vacio-rojo .fc-daygrid-day-number { color: #ef4444 !important; font-weight: 600; }
 </style>
 
 <script>
     let calendarioInstancia = null;
-
-    window.addEventListener('scroll', function() {
-        const scrollPosition = window.scrollY;
-        const heroBg = document.querySelector('.hero-bg');
-        const heroContent = document.querySelector('.hero-content');
-        if (heroBg && heroContent) {
-            let scaleValue = 1 + (scrollPosition * 0.0015);
-            let opacityValue = 1 - (scrollPosition * 0.0035);
-            if (opacityValue < 0) opacityValue = 0;
-            if (scaleValue > 1.8) scaleValue = 1.8;
-            heroBg.style.transform = `scale(${scaleValue})`;
-            heroBg.style.opacity = opacityValue;
-            heroContent.style.opacity = opacityValue;
-            heroContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
-        }
-    });
 
     document.getElementById('buscadorCartelera').addEventListener('keyup', function() {
         const busqueda = this.value.toLowerCase().trim();
@@ -335,11 +385,10 @@
     function inicializarCalendarioBurbuja() {
         const elementoCalendario = document.getElementById('fullCalendarContenedor');
         const tabActiva = document.querySelector('.nav-pills .nav-link.active').id;
-        
         let areaFiltro = 'BANOS_H';
         if (tabActiva === 'mujeres-tab') areaFiltro = 'BANOS_M';
         if (tabActiva === 'verdes-tab') areaFiltro = 'AREAS_V';
-        if (tabActiva === 'jardines-tab') areaFiltro = 'JARDINES'; // 🏡 Mapeo automático de Jardines
+        if (tabActiva === 'jardines-tab') areaFiltro = 'JARDINES';
 
         const filasTurnos = document.querySelectorAll('.fila-turno');
         let eventos = [];
@@ -361,7 +410,7 @@
                 }
 
                 eventos.push({
-                    title: `👤 ${estudiante} (${tarea})`,
+                    title: `${estudiante} (${tarea})`,
                     start: fechaFila,
                     allDay: true,
                     extendedProps: { estado: estado, estudiante: estudiante, tarea: tarea }
@@ -393,13 +442,13 @@
             dateClick: function(info) {
                 let turnosDelDia = eventos.filter(e => e.start === info.dateStr);
                 if (turnosDelDia.length > 0) {
-                    let mensaje = `📅 Asignaciones para el ${info.dateStr}:\n\n`;
+                    let mensaje = `Asignaciones para el ${info.dateStr}:\n\n`;
                     turnosDelDia.forEach((t, idx) => {
                         mensaje += `${idx + 1}. ${t.extendedProps.estudiante} ➡️ Tarea: ${t.extendedProps.tarea} [${t.extendedProps.estado}]\n`;
                     });
                     alert(mensaje);
                 } else {
-                    alert(`📅 El día ${info.dateStr} no tiene programada ninguna limpieza para esta área.`);
+                    alert(`El día ${info.dateStr} no tiene programada ninguna limpieza para esta área.`);
                 }
             }
         });
@@ -407,14 +456,14 @@
         calendarioInstancia.render();
     }
 
-    document.getElementById('modalCalendarioBurbuja').addEventListener('shown.bs.modal', function () {
+    document.getElementById('modalCalendariaBurbuja').addEventListener('shown.bs.modal', function () {
         inicializarCalendarioBurbuja();
         if (calendarioInstancia) calendarioInstancia.updateSize();
     });
 
     document.querySelectorAll('.nav-pills .nav-link').forEach(tab => {
         tab.addEventListener('shown.bs.tab', function() {
-            if (document.getElementById('modalCalendarioBurbuja').classList.contains('show')) {
+            if (document.getElementById('modalCalendariaBurbuja').classList.contains('show')) {
                 inicializarCalendarioBurbuja();
             }
         });
