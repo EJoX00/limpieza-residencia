@@ -3,15 +3,16 @@
 
 {% block content %}
 <style>
-    /* 📋 DISEÑO PROFESIONAL MINIMALISTA PARA LA CARTELERA */
+    /* 📋 ESTILOS REEDIFICADOS VIVOS PARA LA CARTELERA */
     .hero-section { 
-        background-color: #0f172a !important; 
-        height: 55vh !important; 
-        border-bottom: 1px solid #1e293b;
+        height: 50vh !important; 
+        border-bottom: 3px solid #0f172a;
+        background-color: #0f172a;
     }
-    /* 🎨 RETORNO DEL EFECTO ZOOM PARALLAX SEGURO */
+    
+    /* 🖼️ REPARACIÓN ABSOLUTA DE LA IMAGEN DE FONDO */
     .hero-bg { 
-        background-image: url("{% static 'fondo-uni.png' %}"); 
+        background-image: url("{% static 'fondo-uni.png' %}") !important; 
         background-size: cover; 
         background-position: center; 
         transition: transform 0.1s ease-out, opacity 0.1s ease-out; 
@@ -19,103 +20,126 @@
     }
     .z-index-2 { z-index: 2; }
     
+    /* Selector de pestañas con relieve sólido y colores universitarios */
     .nav-pills { 
-        background-color: #f1f5f9 !important; 
-        padding: 4px; 
-        border-radius: 6px; 
+        background-color: #e2e8f0 !important; 
+        padding: 6px; 
+        border-radius: 8px;
+        border: 2px solid #0f172a;
     }
     .nav-pills .nav-link { 
-        color: #64748b !important; 
-        font-weight: 500; 
+        color: #0f172a !important; 
+        font-weight: 700; 
         font-size: 0.875rem;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: all 0.15s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
     }
     .nav-pills .nav-link.active { 
-        background-color: #ffffff !important; 
-        color: #0f172a !important; 
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important; 
+        background-color: #0f172a !important; 
+        color: #ffffff !important; 
+    }
+    
+    /* Tablas robustas de alto contraste editorial */
+    .table {
+        margin-bottom: 0;
     }
     .table th { 
-        background-color: #f8fafc; 
-        color: #475569; 
+        background-color: #f8fafc !important; 
+        color: #0f172a !important; 
         text-transform: uppercase; 
-        font-size: 0.725rem; 
+        font-size: 0.75rem; 
         letter-spacing: 0.05em; 
-        border-bottom: 1px solid #e2e8f0 !important; 
-        font-weight: 600;
+        border-bottom: 2px solid #0f172a !important; 
+        font-weight: 800;
+        padding: 12px 16px !important;
     }
     .table td {
         padding: 14px 16px !important;
-        font-size: 0.875rem;
-        border-bottom: 1px solid #f1f5f9 !important;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-bottom: 1px solid #e2e8f0 !important;
     }
-    .card-header { 
-        background-color: #ffffff !important; 
-        border-bottom: 1px solid #e2e8f0 !important; 
-        color: #0f172a !important; 
-        font-weight: 600; 
-    }
+    
+    /* Botones fuertes con relieve sólido */
     .btn-primary { 
         background-color: #2563eb !important; 
-        border-color: #2563eb !important; 
-        border-radius: 5px !important; 
-        font-size: 0.875rem;
-        font-weight: 500;
+        border: 2px solid #0f172a !important;
+        border-radius: 6px !important; 
+        font-weight: 700;
+        box-shadow: 3px 3px 0px 0px #0f172a !important;
+        transition: all 0.15s ease;
     }
     .btn-primary:hover {
         background-color: #1d4ed8 !important;
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0px 0px #0f172a !important;
     }
+    
+    .btn-outline-dark {
+        border: 2px solid #0f172a !important;
+        font-weight: 700;
+        box-shadow: 3px 3px 0px 0px #0f172a !important;
+        background-color: #ffffff;
+    }
+    .btn-outline-dark:hover {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+    }
+
+    /* Insignias de estado con color corporativo real */
     .badge-status {
         font-size: 0.75rem;
-        font-weight: 500;
-        padding: 4px 8px;
+        font-weight: 700;
+        padding: 6px 10px;
         border-radius: 4px;
+        border: 1px solid #0f172a;
     }
-    .bg-success { background-color: #10b981 !important; color: #ffffff !important; }
-    .bg-danger { background-color: #ef4444 !important; color: #ffffff !important; }
-    .bg-warning { background-color: #f59e0b !important; color: #ffffff !important; }
+    .bg-success { background-color: #4ade80 !important; color: #0f172a !important; }
+    .bg-danger { background-color: #fca5a5 !important; color: #0f172a !important; }
+    .bg-warning { background-color: #fde047 !important; color: #0f172a !important; }
 </style>
 
 <div class="position-fixed top-0 end-0 pe-4 pt-3 d-flex align-items-center gap-2" style="z-index: 1060;">
     <a href="{% url 'cartelera_publica' %}" 
-       class="btn btn-light shadow-sm d-flex align-items-center justify-content-center"
-       style="width: 42px; height: 42px; border-radius: 50% !important; border: 1px solid #e2e8f0;"
+       class="btn btn-light d-flex align-items-center justify-content-center shadow-sm"
+       style="width: 42px; height: 42px; border-radius: 50% !important; border: 2px solid #0f172a;"
        title="Ver Cartelera Pública">
-        <i class="fas fa-home text-secondary"></i>
+        <i class="fas fa-home text-dark"></i>
     </a>
 
-    <button class="btn btn-light shadow-sm d-flex align-items-center justify-content-center" 
-            style="width: 42px; height: 42px; border-radius: 50% !important; border: 1px solid #e2e8f0;"
+    <button class="btn btn-light d-flex align-items-center justify-content-center shadow-sm" 
+            style="width: 42px; height: 42px; border-radius: 50% !important; border: 2px solid #0f172a;"
             type="button" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#menuLateralAdmin" 
             aria-controls="menuLateralAdmin">
-        <i class="fas fa-bars text-secondary"></i>
+        <i class="fas fa-bars text-dark"></i>
     </button>
 </div>
 
-<div class="offcanvas offcanvas-end border-start" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
+<div class="offcanvas offcanvas-end" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
     <div class="offcanvas-header border-bottom">
-        <h6 class="offcanvas-title fw-bold text-dark" id="menuLateralAdminLabel" style="letter-spacing: 0.03em;">Consola de Acceso</h6>
+        <h6 class="offcanvas-title fw-bold text-dark" id="menuLateralAdminLabel" style="letter-spacing: 0.03em;">CONSOLA DE GESTIÓN</h6>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between py-4">
         <div class="d-grid gap-3">
             {% if user.is_authenticated %}
-                <div class="p-3 rounded text-center" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                    <span class="small text-muted d-block mb-1">Administrador Activo</span>
+                <div class="p-3 rounded text-center bg-light border" style="border: 2px solid #0f172a !important;">
+                    <span class="small text-muted d-block mb-1 fw-semibold">Administrador Activo</span>
                     <strong class="text-dark">Admin. {{ user.username }}</strong>
                 </div>
-                <a href="{% url 'panel_control' %}" class="btn btn-primary fw-medium py-2 shadow-sm text-start">
+                <a href="{% url 'panel_control' %}" class="btn btn-primary text-white text-start py-2.5">
                     <i class="fas fa-th-large me-2"></i> Mi Panel de Área
                 </a>
             {% else %}
-                <div class="text-muted small text-center px-2">Accede a la consola de administración de la residencia para gestionar turnos.</div>
-                <a href="{% url 'login' %}" class="btn btn-outline-dark fw-medium py-2 text-start">
+                <div class="text-muted small text-center px-2 fw-medium">Accede a la consola de administración de la residencia para gestionar turnos.</div>
+                <a href="{% url 'login' %}" class="btn btn-outline-dark text-start py-2.5">
                     <i class="fas fa-sign-in-alt me-2 text-primary"></i> Ingresar al Sistema
                 </a>
-                <a href="{% url 'registro_admin' %}" class="btn btn-dark fw-medium py-2 shadow-sm text-start">
+                <a href="{% url 'registro_admin' %}" class="btn btn-primary text-white text-start py-2.5">
                     <i class="fas fa-user-plus me-2"></i> Registro Admin
                 </a>
             {% endif %}
@@ -125,7 +149,7 @@
         <div class="d-grid border-top pt-4">
             <form action="{% url 'logout' %}" method="POST" class="d-grid">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-outline-danger fw-medium py-2"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
+                <button type="submit" class="btn btn-outline-danger fw-bold py-2"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
             </form>
         </div>
         {% endif %}
@@ -134,18 +158,18 @@
 
 <div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5">
     <div class="hero-bg position-absolute top-0 start-0 w-100 h-100"></div>
-    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 opacity-30" style="background-color: #000;"></div>
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 opacity-40" style="background-color: #0f172a;"></div>
     <div class="hero-content position-relative z-index-2 px-3">
-        <h2 class="fw-bold mb-2" style="font-size: 2.35rem; letter-spacing: -0.02em;">Residencia Estudiantil UNI</h2>
-        <p class="lead fs-5 text-muted mb-0 fw-normal" style="color: #cbd5e1 !important;">Control General de Asignaciones de Limpieza</p>
+        <h1 class="fw-800 mb-1" style="font-size: 2.6rem; letter-spacing: -0.03em; font-weight: 800; text-shadow: 2px 2px 0px #0f172a;">RESIDENCIA ESTUDIANTIL</h1>
+        <p class="lead fs-5 mb-0 fw-semibold text-warning" style="letter-spacing: 0.05em; text-transform: uppercase;">Universidad Nacional de Ingeniería</p>
     </div>
 </div>
 
 <div class="container px-4">
     <div class="row mb-4 align-items-center text-center text-md-start g-3">
         <div class="col-md-8">
-            <h5 class="fw-bold text-dark mb-1">Roles de Limpieza Asignados</h5>
-            <p class="text-muted small mb-0">Seleccione el área correspondiente para consultar los turnos.</p>
+            <h4 class="fw-bold text-dark mb-1">Roles de Limpieza Asignados</h4>
+            <p class="text-muted small mb-0">Seleccione el bloque de residencia abajo para auditar el cumplimiento.</p>
         </div>
         <div class="col-md-4 text-md-end text-center">
             <button type="button" class="btn btn-outline-dark py-2 px-3" data-bs-toggle="modal" data-bs-target="#modalCalendariaBurbuja">
@@ -154,7 +178,7 @@
         </div>
     </div>
 
-    <div class="card mb-4 bg-white shadow-sm border">
+    <div class="card mb-4 bg-white" style="box-shadow: 3px 3px 0px 0px #0f172a !important;">
         <div class="card-body p-2">
             <div class="input-group border-0">
                 <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-search"></i></span>
@@ -205,11 +229,11 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_H' %}
                                 <tr class="fila-turno" data-area="BANOS_H" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td class="fw-bold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-dark border px-2 py-1 fw-semibold" style="border-color: #0f172a !important;">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante fw-semibold">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border border-secondary">Hab. {{ turno.estudiante.habitacion }}</span></td>
                                     <td>
                                         <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
                                             {{ turno.get_estado_display }}
@@ -218,7 +242,7 @@
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small fw-semibold">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -241,14 +265,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% accept_turnos_mujeres_loop %}
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_M' %}
                                 <tr class="fila-turno" data-area="BANOS_M" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td class="fw-bold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-dark border px-2 py-1 fw-semibold" style="border-color: #0f172a !important;">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante fw-semibold">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border border-secondary">Hab. {{ turno.estudiante.habitacion }}</span></td>
                                     <td>
                                         <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
                                             {{ turno.get_estado_display }}
@@ -257,7 +282,7 @@
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small fw-semibold">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -283,11 +308,11 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'AREAS_V' %}
                                 <tr class="fila-turno" data-area="AREAS_V" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-success fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td class="fw-bold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-dark border px-2 py-1 fw-semibold" style="border-color: #0f172a !important;">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante fw-semibold">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border border-secondary">Hab. {{ turno.estudiante.habitacion }}</span></td>
                                     <td>
                                         <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
                                             {{ turno.get_estado_display }}
@@ -296,7 +321,7 @@
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta sección.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small fw-semibold">No hay turnos registrados en esta sección.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -322,11 +347,11 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'JARDINES' %}
                                 <tr class="fila-turno" data-area="JARDINES" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
-                                    <td><span class="badge bg-light text-secondary border px-2 py-1">{{ turno.get_turno_horario_display }}</span></td>
-                                    <td><span class="text-info fw-medium">{{ turno.tarea.nombre_tarea }}</span></td>
-                                    <td class="nombre-estudiante">{{ turno.estudiante.nombre }}</td>
-                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border">Hab. {{ turno.estudiante.habitacion }}</span></td>
+                                    <td class="fw-bold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-light text-dark border px-2 py-1 fw-semibold" style="border-color: #0f172a !important;">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-info fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante fw-semibold">{{ turno.estudiante.nombre }}</td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-light text-dark border border-secondary">Hab. {{ turno.estudiante.habitacion }}</span></td>
                                     <td>
                                         <span class="badge badge-status {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
                                             {{ turno.get_estado_display }}
@@ -335,7 +360,7 @@
                                 </tr>
                                 {% endif %}
                             {% empty %}
-                                <tr><td colspan="6" class="text-center py-4 text-muted small">No hay turnos registrados en esta área.</td></tr>
+                                <tr><td colspan="6" class="text-center py-4 text-muted small fw-semibold">No hay turnos registrados en esta área.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -347,13 +372,13 @@
 
 <div class="modal fade" id="modalCalendariaBurbuja" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0">
-            <div class="modal-header border-bottom">
+        <div class="modal-content border-2" style="border: 2px solid #0f172a;">
+            <div class="modal-header bg-white border-bottom">
                 <h6 class="modal-title fw-bold text-dark">Calendario de Cumplimiento Mensual</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3 bg-white">
-                <div class="alert alert-warning border-0 py-2 small mb-3" style="background-color: #fffbeb; color: #b45309; font-size: 0.8rem;">
+                <div class="alert alert-warning border-2 py-2 small mb-3" style="background-color: #fffbeb; color: #b45309; font-size: 0.8rem;">
                     Las celdas con tonalidades rojas indican fechas donde no se registraron cumplimientos. Toca un día para desplegar los detalles.
                 </div>
                 <div id="fullCalendarContenedor" style="max-height: 60vh;"></div>
@@ -365,12 +390,12 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <style>
-    .fc .fc-toolbar-title { font-size: 1.1rem !important; font-weight: 600 !important; color: #0f172a; }
-    .fc .fc-button-primary { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #475569 !important; font-weight: 500 !important; font-size: 0.85rem !important; }
-    .fc .fc-button-primary:hover { background-color: #f8fafc !important; color: #0f172a !important; }
-    .fc .fc-button-active { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+    .fc .fc-toolbar-title { font-size: 1.1rem !important; font-weight: 700 !important; color: #0f172a; }
+    .fc .fc-button-primary { background-color: #ffffff !important; border: 2px solid #0f172a !important; color: #0f172a !important; font-weight: 700 !important; font-size: 0.85rem !important; }
+    .fc .fc-button-primary:hover { background-color: #f1f5f9 !important; }
+    .fc .fc-button-active { background-color: #0f172a !important; color: #ffffff !important; }
     .fc-daygrid-day.dia-vacio-rojo { background-color: #fef2f2 !important; } 
-    .fc-daygrid-day.dia-vacio-rojo .fc-daygrid-day-number { color: #ef4444 !important; font-weight: 600; }
+    .fc-daygrid-day.dia-vacio-rojo .fc-daygrid-day-number { color: #ef4444 !important; font-weight: 700; }
 </style>
 
 <script>
