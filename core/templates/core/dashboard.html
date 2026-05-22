@@ -1,6 +1,32 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+<style>
+    /* 🎨 ESTILOS PARTICULARES DE PANEL: ENTORNO PREMIUM SLATE */
+    .bg-dark-custom { background-color: #0f172a !important; }
+    .card-header { font-weight: 600 !important; font-size: 0.9rem; }
+    .table th { 
+        background-color: #f8fafc; 
+        color: #475569; 
+        text-transform: uppercase; 
+        font-size: 0.725rem; 
+        letter-spacing: 0.05em; 
+        border-bottom: 1px solid #e2e8f0 !important; 
+        font-weight: 600;
+    }
+    .table td { font-size: 0.85rem; padding: 12px 10px !important; }
+    input, select { display: block; width: 100%; padding: 0.375rem 0.75rem; border: 1px solid #ced4da; border-radius: 0.375rem; margin-bottom: 10px; font-size: 0.875rem; }
+    .style-table td, .style-table th { padding: 6px 8px !important; }
+    
+    /* Hover animado para el botón flotante de la casita */
+    .position-fixed .btn:hover {
+        transform: scale(1.08);
+        background-color: #000 !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
+        transition: all 0.2s ease;
+    }
+</style>
+
 <div class="position-fixed top-0 start-0 ps-3 pt-3" style="z-index: 1060;">
     <a href="{% url 'cartelera_publica' %}" 
        class="btn btn-dark btn-md rounded-pill shadow-lg d-flex align-items-center gap-2"
@@ -13,9 +39,11 @@
 <div class="container py-5 mt-4">
 
     {% if areas_disponibles %}
-    <div class="card bg-dark text-white mb-4 shadow-sm">
+    <div class="card bg-dark-custom text-white mb-4 shadow-sm border-0">
         <div class="card-body d-flex align-items-center justify-content-between flex-wrap py-2">
-            <span class="fw-bold text-warning">🛡️ Admin. E.Rios (Control Global):</span>
+            <span class="fw-bold text-warning" style="font-size: 0.9rem;">
+                {% if user.is_superuser %}Admin. Eliel Rios (Control Global):{% else %}Área Asignada (Admin. {{ user.username }}):{% endif %}
+            </span>
             <div class="btn-group btn-group-sm my-1">
                 {% for a in areas_disponibles %}
                     <a href="?area_id={{ a.id }}" class="btn {% if a.id == area.id %}btn-warning text-dark fw-bold{% else %}btn-outline-light{% endif %}">
@@ -34,11 +62,11 @@
         </div>
         <div class="col-md-6 text-md-end align-self-center">
             {% if user.is_superuser %}
-                <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#modalCodigo">🔑 Generar Códigos</button>
-                <button type="button" class="btn btn-sm btn-success m-1" data-bs-toggle="modal" data-bs-target="#modalEstudiante">➕ Registrar Estudiante</button>
+                <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#modalCodigo"><i class="fas fa-key me-1"></i> Generar Códigos</button>
+                <button type="button" class="btn btn-sm btn-success m-1" data-bs-toggle="modal" data-bs-target="#modalEstudiante"><i class="fas fa-plus me-1"></i> Registrar Estudiante</button>
             {% endif %}
-            <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion">🚫 Bloqueo Horario</button>
-            <button type="button" class="btn btn-sm btn-outline-dark m-1" data-bs-toggle="modal" data-bs-target="#modalManual">✍️ Asignación Manual</button>
+            <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion"><i class="fas fa-ban me-1"></i> Horario Académico</button>
+            <button type="button" class="btn btn-sm btn-outline-dark m-1" data-bs-toggle="modal" data-bs-target="#modalManual"><i class="fas fa-edit me-1"></i> Asignación Manual</button>
             
             <form action="{% url 'logout' %}" method="POST" class="d-inline m-1">
                 {% csrf_token %}
@@ -49,18 +77,18 @@
 
     <div class="row">
         <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-primary mb-4">
-                <div class="card-header bg-primary text-white"><h5 class="mb-0">🤖 Generador Inteligente</h5></div>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white text-dark border-bottom">Generador Inteligente</div>
                 <div class="card-body">
                     <form method="POST" action="{% url 'acc_generar_rol' %}">
                         {% csrf_token %}
                         <input type="hidden" name="area_id" value="{{ area.id }}">
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Fecha de Limpieza</label>
+                            <label class="form-label fw-bold small text-muted">Fecha de Limpieza</label>
                             <input type="date" name="fecha" value="{{ fecha_hoy }}" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Turno Horario</label>
+                            <label class="form-label fw-bold small text-muted">Turno Horario</label>
                             <select name="turno_horario" class="form-select" required>
                                 <option value="TARDE">Tarde (2:00 PM)</option>
                                 <option value="NOCHE" selected>Noche</option>
@@ -71,15 +99,15 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">🔍 Buscador de Estudiantes</h5>
-                    <a href="?buscar_estudiante=DEUDORES{% if request.user.is_superuser %}&area_id={{ area.id }}{% endif %}" class="badge bg-danger text-decoration-none text-white small">⚠️ Ver Faltas</a>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center border-bottom">
+                    <span class="fw-bold">Buscador de Estudiantes</span>
+                    <a href="?buscar_estudiante=DEUDORES{% if request.user.is_superuser %}&area_id={{ area.id }}{% endif %}" class="badge bg-danger text-decoration-none text-white small">Ver Faltas</a>
                 </div>
                 <div class="card-body">
                     <form method="GET" class="mb-3">
                         {% if request.user.is_superuser %}<input type="hidden" name="area_id" value="{{ area.id }}">{% endif %}
-                        <div class="input-group">
+                        <div class="input-group input-group-sm">
                             <input type="text" name="buscar_estudiante" value="{% if query_busqueda != 'DEUDORES' %}{{ query_busqueda }}{% endif %}" class="form-control" placeholder="Habitación, Nombre o Carnet...">
                             <button class="btn btn-dark" type="submit">Buscar</button>
                         </div>
@@ -88,21 +116,23 @@
                         {% endif %}
                     </form>
                     
-                    <ul class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">
+                    <ul class="list-group list-group-flush border rounded" style="max-height: 200px; overflow-y: auto;">
                         {% for est in lista_estudiantes %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center py-1 px-2 small {% if est.total_faltas > 0 and query_busqueda == 'DEUDORES' %}list-group-item-danger{% endif %}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-2 small {% if est.total_faltas > 0 and query_busqueda == 'DEUDORES' %}list-group-item-danger{% endif %}">
                                 <div>
                                     <strong>{{ est.nombre }}</strong> 
                                     {% if est.total_faltas > 0 %}
-                                        <span class="badge bg-danger ms-1" title="Faltas acumuladas">{{ est.total_faltas }} FALTAS</span>
+                                        <span class="badge bg-danger ms-1" style="font-size: 0.65rem;">{{ est.total_faltas }} FALTAS</span>
                                     {% endif %}
                                     <br>
-                                    <small class="text-muted">{{ est.carrera }} | {{ est.carnet }}</small>
+                                    <small class="text-muted" style="font-size: 0.75rem;">{{ est.carrera }} | {{ est.carnet }}</small>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-info text-dark me-2">Hab: {{ est.habitacion }}</span>
-                                    <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-sm btn-outline-info py-0 px-1" title="Editar datos"><i class="fas fa-edit"></i></a>
-                                    <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }} del sistema?');" title="Eliminar becado"><i class="fas fa-trash-alt"></i></a>
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="badge bg-light text-dark border me-1" style="font-size: 0.7rem;">Hab. {{ est.habitacion }}</span>
+                                    {% if user.is_superuser %}
+                                        <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-xs btn-outline-info p-1 border" style="font-size: 0.7rem;" title="Editar datos"><i class="fas fa-edit"></i></a>
+                                        <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-xs btn-outline-danger p-1 border" style="font-size: 0.7rem;" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }}?');" title="Eliminar becado"><i class="fas fa-trash-alt"></i></a>
+                                    {% endif %}
                                 </div>
                             </li>
                         {% empty %}
@@ -113,20 +143,20 @@
             </div>
 
             {% if user.is_superuser %}
-            <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark"><h5 class="mb-0">🔑 Códigos de Registro Creados</h5></div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white text-dark border-bottom">Tokens de Acceso Activos</div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
                         {% for cod in codigos_registro %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center py-1 px-2 small">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-1.5 px-2 small">
                                 <div>
-                                    <code>{{ cod.codigo }}</code> <br>
-                                    <small class="text-muted">Área: {{ cod.area_permitida.get_nombre_display }}</small>
+                                    <code class="fw-bold">{{ cod.codigo }}</code> <br>
+                                    <small class="text-muted" style="font-size: 0.7rem;">Área: {{ cod.area_permitida.get_nombre_display }}</small>
                                 </div>
                                 {% if cod.usado %}
-                                    <span class="badge bg-secondary">Usado: {{ cod.usuario_creado.username }}</span>
+                                    <span class="badge bg-light text-secondary border">Usado: {{ cod.usuario_creado.username }}</span>
                                 {% else %}
-                                    <span class="badge bg-success">Libre</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Libre</span>
                                 {% endif %}
                             </li>
                         {% empty %}
@@ -139,8 +169,8 @@
         </div>
 
         <div class="col-md-8 mb-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-dark text-white"><h5 class="mb-0">📋 Lista de Turnos del Área</h5></div>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white text-dark border-bottom">Cronograma de Asignaciones del Bloque</div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
@@ -156,24 +186,24 @@
                             <tbody>
                                 {% for turno in turnos %}
                                 <tr>
-                                    <td>{{ turno.fecha|date:"d M" }} - <small class="text-muted">{{ turno.get_turno_horario_display }}</small></td>
-                                    <td>{{ turno.tarea.nombre_tarea }}</td>
-                                    <td><strong>{{ turno.estudiante.nombre }}</strong> <br><small class="text-muted">Cuarto: {{ turno.estudiante.habitacion }}</small></td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M" }} - <small class="text-muted">{{ turno.get_turno_horario_display }}</small></td>
+                                    <td class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</td>
+                                    <td><strong>{{ turno.estudiante.nombre }}</strong> <br><small class="text-muted" style="font-size: 0.75rem;">Cuarto: {{ turno.estudiante.habitacion }}</small></td>
                                     <td>
                                         {% if turno.estado == 'PENDIENTE' %}
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0">✓</a>
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0">✗</a>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0.5 px-1.5 fw-bold" style="font-size: 0.75rem;">✓</a>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0.5 px-1.5 fw-bold" style="font-size: 0.75rem;">✗</a>
                                         {% else %}
-                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %}">{{ turno.get_estado_display }}</span>
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none">Reiniciar</a>
+                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7rem;">{{ turno.get_estado_display }}</span>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none" style="font-size: 0.75rem;">Reiniciar</a>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{% url 'acc_borrar_turno' turno.id %}" class="btn btn-outline-danger btn-sm py-0 px-1" onclick="return confirm('¿Remover asignación?');">Eliminar</a>
+                                        <a href="{% url 'acc_borrar_turno' turno.id %}" class="text-danger small text-decoration-none" style="font-size: 0.75rem;" onclick="return confirm('¿Remover asignación?');">Eliminar</a>
                                     </td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="5" class="text-center py-4 text-muted">Sin turnos asignados en esta sección.</td></tr>
+                                <tr><td colspan="5" class="text-center py-4 text-muted small">Sin turnos asignados en esta sección.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -181,8 +211,9 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-info text-dark"><h5 class="mb-0">📑 Historial de Trabajo de los Administradores (Auditoría en Vivo)</h5></div>
+            {% if user.is_superuser %}
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white text-dark border-bottom">Bitácora de Auditoría Residencial (Historial de Cambios)</div>
                 <div class="card-body p-0" style="max-height: 250px; overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="table table-sm table-striped mb-0 style-table small">
@@ -199,34 +230,36 @@
                                 <tr>
                                     <td class="text-muted">{{ log.fecha_hora|date:"d/m H:i" }}</td>
                                     <td><strong>{{ log.usuario.username }}</strong></td>
-                                    <td><span class="badge bg-secondary">{{ log.area_origen }}</span></td>
-                                    <td>{{ log.accion }}</td>
+                                    <td><span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">{{ log.area_origen }}</span></td>
+                                    <td class="text-muted" style="font-size: 0.75rem;">{{ log.accion }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="4" class="text-center text-muted py-3">Aún no se registran movimientos en la bitácora.</td></tr>
+                                <tr><td colspan="4" class="text-center text-muted py-3 small">Aún no se registran movimientos en la bitácora.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
+</div>
 
-</div> {% if user.is_superuser %}
+{% if user.is_superuser %}
 <div class="modal fade" id="modalCodigo" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-3">
-            <div class="modal-header"><h5 class="modal-title fw-bold">🔑 Crear Código para Administrador</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content border-0 p-2">
+            <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Crear Código para Administrador</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form method="POST" action="{% url 'g_codigo' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Escribe un Código de Carnet Autorizado</label>
+                        <label class="form-label small fw-bold text-muted">Escribe un Código de Carnet Autorizado</label>
                         <input type="text" name="codigo" class="form-control" placeholder="Ej: 2023-0101U" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold">Área que va a tener a cargo</label>
+                        <label class="form-label small fw-bold text-muted">Área que va a tener a cargo</label>
                         <select name="area_permitida" class="form-select" required>
                             {% for a in areas_disponibles %}
                                 <option value="{{ a.id }}">{{ a.get_nombre_display }}</option>
@@ -242,8 +275,8 @@
 
 <div class="modal fade" id="modalEstudiante" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-3">
-            <div class="modal-header"><h5 class="modal-title fw-bold">➕ Registrar Nuevo Estudiante</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content border-0 p-2">
+            <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Registrar Nuevo Estudiante</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form method="POST" action="{% url 'g_estudiante' %}">{% csrf_token %}{{ form_estudiante.as_p }}<button type="submit" class="btn btn-success w-100 fw-bold">Guardar Alumno</button></form>
             </div>
@@ -254,8 +287,8 @@
 
 <div class="modal fade" id="modalExcepcion" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-3">
-            <div class="modal-header"><h5 class="modal-title fw-bold">🚫 Registrar Horario Bloqueado</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content border-0 p-2">
+            <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Registrar Horario Bloqueado</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form method="POST" action="{% url 'g_excepcion' %}">{% csrf_token %}{{ form_excepcion.as_p }}<button type="submit" class="btn btn-danger w-100 fw-bold">Guardar Bloqueo</button></form>
             </div>
@@ -265,9 +298,9 @@
 
 <div class="modal fade" id="modalManual" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content p-3">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold">✍️ Asignación Manual Directa</h5>
+        <div class="modal-content border-0 p-2">
+            <div class="modal-header border-bottom">
+                <h6 class="modal-title fw-bold">Asignación Manual Directa</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -278,7 +311,7 @@
                     
                     {{ form_manual.as_p }}
                     
-                    <button type="submit" class="btn btn-dark w-100 fw-bold mt-2">Asignar a Dedo</button>
+                    <button type="submit" class="btn btn-dark w-100 fw-bold mt-2">Asignar Manualmente</button>
                 </form>
             </div>
         </div>
@@ -294,17 +327,4 @@
         document.getElementById('manual_turno_contexto').value = turnoActivo;
     });
 </script>
-
-<style>
-    input, select { display: block; width: 100%; padding: 0.375rem 0.75rem; border: 1px solid #ced4da; border-radius: 0.375rem; margin-bottom: 10px; }
-    .style-table td, .style-table th { padding: 4px 8px !important; }
-    
-    /* Hover animado para el botón flotante de la casita */
-    .position-fixed .btn:hover {
-        transform: scale(1.08);
-        background-color: #000 !important;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
-        transition: all 0.2s ease;
-    }
-</style>
 {% endblock %}
