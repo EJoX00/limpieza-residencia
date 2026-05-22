@@ -9,14 +9,17 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
     para cubrir las tareas de un área en una fecha y turno específicos.
     Respeta estrictamente los géneros por baños, balancea 4H/4M en Áreas Verdes
     y obliga una patrulla mixta de 2H/2M en Jardines Internos.
+    Aplica descarte cruzado inteligente de 3 turnos (MAÑANA, TARDE, NOCHE).
     """
     # Validar si existen tareas en esta área antes de hacer nada
     tareas = Tarea.objects.filter(area=area)
     if not tareas.exists():
         raise Exception(f"No hay tareas registradas en la base de datos para el área: {area}. Debes crearlas primero.")
         
-    # Formato estándar de Django para días de la semana (0=Lunes, 1=Martes, ..., 6=Domingo)
+    # 📆 CORRECCIÓN DE DESFASE: Django (0=Lunes, 6=Domingo) -> Tu DB (1=Lunes, 7=Domingo)
     dia_semana_django = fecha.weekday() 
+    dia_semana_db = dia_semana_django + 1
+    
     turnos_creados = []
 
     with transaction.atomic():
@@ -35,25 +38,27 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
             
             # El ciclo se ejecutará la cantidad de cupos definidos arriba
             for cupo in cupos_requeridos:
-                # 🚀 LÓGICA DE RONDAS INFINITAS
+                # 🚀 LÓGICA DE RONDAS INFINITAS POR COLA DE ROTACIÓN JUSTA
                 estudiantes_qs = Estudiante.objects.annotate(
                     total_turnos=Count('turnoasignado')
                 ).filter(genero=cupo['genero']).order_by('total_turnos', '?')
 
                 estudiante_elegido = None
 
-                # 2. Evaluar la disponibilidad real de cada muchacho
+                # 🔍 Evaluar la disponibilidad real de cada muchacho
                 for estudiante in estudiantes_qs:
-                    # REGLA 1: Excepciones de horario de clases
+                    
+                    # REGLA 1: Excepciones de horario de clases (Descarte Inteligente Cruzado de 3 Turnos)
                     tiene_excepcion = ExcepcionHorario.objects.filter(
-                        Q(dia_semana=str(dia_semana_django)) | Q(dia_semana=dia_semana_django),
                         estudiante=estudiante,
-                        turno=turno_horario
+                        dia_semana=dia_semana_db,
+                        turno=turno_horario  # Filtra exactamente por el turno evaluado (MANANA, TARDE, NOCHE)
                     ).exists()
+                    
                     if tiene_excepcion:
-                        continue 
+                        continue # Tiene clases en este turno, pasamos al siguiente estudiante libre
 
-                    # REGLA 2: Exclusión mutua (CORREGIDO: student ➡️ estudiante)
+                    # REGLA 2: Exclusión mutua (No repetir al mismo estudiante el mismo día en distintas tareas)
                     ya_limpia_hoy = TurnoAsignado.objects.filter(
                         estudiante=estudiante, 
                         fecha=fecha
@@ -62,19 +67,19 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                     if ya_limpia_hoy:
                         continue 
 
-                    # Candidato ideal encontrado
+                    # Candidato ideal encontrado que cumple con el género, no limpia hoy y no tiene clases
                     estudiante_elegido = estudiante
                     break
 
-                # Si el bucle termina y nadie de ese género pudo cubrir el puesto
+                # Si el bucle termina y nadie de ese género pudo cubrir el puesto por choques de horario
                 if not estudiante_elegido:
                     genero_texto = "Varones" if cupo['genero'] == 'M' else "Mujeres"
                     raise Exception(
                         f"Falta de personal: No hay suficientes estudiantes del género [{genero_texto}] disponibles "
-                        f"(sin clases ni asignaciones hoy) para cubrir el cupo de '{tarea.nombre_tarea}' el {fecha}."
+                        f"(sin clases ni asignaciones hoy) para cubrir el cupo de '{tarea.nombre_tarea}' en el turno {turno_horario} el {fecha}."
                     )
 
-                # 3. Crear el turno asignado
+                # 3. Crear el turno asignado de forma segura
                 nuevo_turno = TurnoAsignado.objects.create(
                     estudiante=estudiante_elegido,
                     tarea=tarea,
