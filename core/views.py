@@ -87,6 +87,7 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
+    # 🚀 CONTROL ABSOLUTO DE LA ASIGNACIÓN MANUAL (GÉNERO + EXCLUSIÓN + ORDEN NUMÉRICO)
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
     
@@ -96,6 +97,7 @@ def panel_control(request):
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
     elif area.nombre == 'BANOS_M':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='F')
+    # 💡 NOTA: Si el área es JARDINES o AREAS_V se salta los filtros y te muestra la lista mixta
         
     estudiantes_manual_qs = estudiantes_manual_qs.exclude(
         turnoasignado__estado='CUMPLIDO'
