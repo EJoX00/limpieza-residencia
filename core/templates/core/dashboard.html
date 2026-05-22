@@ -2,28 +2,77 @@
 
 {% block content %}
 <style>
-    /* 🎨 ESTILOS PARTICULARES DE PANEL: ENTORNO PREMIUM SLATE */
+    /* 🎨 ESTILOS PARTICULARES DE PANEL: ENTORNO EDITORIAL NEO-BRUTALISTA */
     .bg-dark-custom { background-color: #0f172a !important; }
-    .card-header { font-weight: 600 !important; font-size: 0.9rem; }
+    
+    /* Cajas robustas con bordes fuertes y sombras sólidas con carácter */
+    .card {
+        border: 2px solid #0f172a !important;
+        border-radius: 8px !important;
+        box-shadow: 4px 4px 0px 0px #0f172a !important;
+        overflow: hidden;
+    }
+    .card-header { 
+        font-weight: 700 !important; 
+        font-size: 0.9rem; 
+        background-color: #0f172a !important; 
+        color: #ffffff !important;
+        border-bottom: 2px solid #0f172a !important;
+    }
+    
+    /* Tablas de alto contraste */
     .table th { 
         background-color: #f8fafc; 
-        color: #475569; 
+        color: #0f172a; 
         text-transform: uppercase; 
         font-size: 0.725rem; 
         letter-spacing: 0.05em; 
-        border-bottom: 1px solid #e2e8f0 !important; 
-        font-weight: 600;
+        border-bottom: 2px solid #0f172a !important; 
+        font-weight: 700;
     }
-    .table td { font-size: 0.85rem; padding: 12px 10px !important; }
-    input, select { display: block; width: 100%; padding: 0.375rem 0.75rem; border: 1px solid #ced4da; border-radius: 0.375rem; margin-bottom: 10px; font-size: 0.875rem; }
+    .table td { font-size: 0.85rem; padding: 12px 10px !important; font-weight: 500; }
     .style-table td, .style-table th { padding: 6px 8px !important; }
     
-    /* Hover animado para el botón flotante de la casita */
-    .position-fixed .btn:hover {
-        transform: scale(1.08);
-        background-color: #000 !important;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
+    input, select { 
+        display: block; 
+        width: 100%; 
+        padding: 0.375rem 0.75rem; 
+        border: 2px solid #0f172a !important; 
+        border-radius: 6px !important; 
+        margin-bottom: 10px; 
+        font-size: 0.875rem; 
+        font-weight: 500;
+    }
+    
+    /* 🚀 MICRO-ANIMACIONES INTERACTIVAS EN BOTONES ACCIONABLES */
+    .btn-sm, .btn-primary, .btn-danger, .btn-success, .btn-warning, .btn-outline-dark, .btn-outline-danger {
+        border: 2px solid #0f172a !important;
+        font-weight: 700 !important;
+        box-shadow: 2px 2px 0px 0px #0f172a !important;
+        transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-sm:hover, .btn-primary:hover, .btn-success:hover, .btn-warning:hover, .btn-outline-dark:hover {
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4px 4px 0px 0px #0f172a !important;
+    }
+    .btn-sm:active, .btn-primary:active, .btn-success:active, .btn-warning:active {
+        transform: translate(1px, 1px) !important;
+        box-shadow: 1px 1px 0px 0px #0f172a !important;
+    }
+    
+    .btn-outline-danger { background-color: #ffffff; color: #dc3545; }
+    .btn-outline-danger:hover { background-color: #dc3545 !important; color: #ffffff !important; }
+
+    /* Botón flotante de la casita */
+    .position-fixed .btn {
+        border: 2px solid #0f172a !important;
+        box-shadow: 3px 3px 0px 0px #0f172a !important;
         transition: all 0.2s ease;
+    }
+    .position-fixed .btn:hover {
+        transform: scale(1.08) rotate(-2deg);
+        background-color: #000 !important;
+        box-shadow: 5px 5px 0px 0px #0f172a !important;
     }
 </style>
 
@@ -39,7 +88,7 @@
 <div class="container py-5 mt-4">
 
     {% if areas_disponibles %}
-    <div class="card bg-dark-custom text-white mb-4 shadow-sm border-0">
+    <div class="card bg-dark-custom text-white mb-4 border-0">
         <div class="card-body d-flex align-items-center justify-content-between flex-wrap py-2">
             <span class="fw-bold text-warning" style="font-size: 0.9rem;">
                 {% if user.is_superuser %}Admin. Eliel Rios (Control Global):{% else %}Área Asignada (Admin. {{ user.username }}):{% endif %}
@@ -57,51 +106,51 @@
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <h2>Gestión de Área: <span class="text-primary">{{ area.get_nombre_display }}</span></h2>
-            <p class="text-muted">Consola centralizada de administración de personal y roles.</p>
+            <h2 class="fw-bold">Gestión de Área: <span class="text-primary">{{ area.get_nombre_display }}</span></h2>
+            <p class="text-muted small">Consola de control de personal becado y turnos operativos.</p>
         </div>
         <div class="col-md-6 text-md-end align-self-center">
             {% if user.is_superuser %}
-                <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#modalCodigo"><i class="fas fa-key me-1"></i> Generar Códigos</button>
-                <button type="button" class="btn btn-sm btn-success m-1" data-bs-toggle="modal" data-bs-target="#modalEstudiante"><i class="fas fa-plus me-1"></i> Registrar Estudiante</button>
+                <button type="button" class="btn btn-sm btn-warning m-1 text-dark" data-bs-toggle="modal" data-bs-target="#modalCodigo"><i class="fas fa-key me-1"></i> Generar Códigos</button>
+                <button type="button" class="btn btn-sm btn-success m-1 text-white" data-bs-toggle="modal" data-bs-target="#modalEstudiante"><i class="fas fa-plus me-1"></i> Registrar Estudiante</button>
             {% endif %}
             <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion"><i class="fas fa-ban me-1"></i> Horario Académico</button>
             <button type="button" class="btn btn-sm btn-outline-dark m-1" data-bs-toggle="modal" data-bs-target="#modalManual"><i class="fas fa-edit me-1"></i> Asignación Manual</button>
             
             <form action="{% url 'logout' %}" method="POST" class="d-inline m-1">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">Salir</button>
+                <button type="submit" class="btn btn-danger btn-sm text-white">Salir</button>
             </form>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white text-dark border-bottom">Generador Inteligente</div>
+            <div class="card mb-4">
+                <div class="card-header">Generador Inteligente</div>
                 <div class="card-body">
                     <form method="POST" action="{% url 'acc_generar_rol' %}">
                         {% csrf_token %}
                         <input type="hidden" name="area_id" value="{{ area.id }}">
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">Fecha de Limpieza</label>
+                            <label class="form-label fw-bold small text-muted mb-1">Fecha de Limpieza</label>
                             <input type="date" name="fecha" value="{{ fecha_hoy }}" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-muted">Turno Horario</label>
+                            <label class="form-label fw-bold small text-muted mb-1">Turno Horario</label>
                             <select name="turno_horario" class="form-select" required>
                                 <option value="TARDE">Tarde (2:00 PM)</option>
                                 <option value="NOCHE" selected>Noche</option>
                             </select>
                         </div>
-                        <div class="d-grid"><button type="submit" class="btn btn-primary">Asignar Estudiantes Libres</button></div>
+                        <div class="d-grid"><button type="submit" class="btn btn-primary text-white">Asignar Estudiantes Libres</button></div>
                     </form>
                 </div>
             </div>
 
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center border-bottom">
-                    <span class="fw-bold">Buscador de Estudiantes</span>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Buscador de Estudiantes</span>
                     <a href="?buscar_estudiante=DEUDORES{% if request.user.is_superuser %}&area_id={{ area.id }}{% endif %}" class="badge bg-danger text-decoration-none text-white small">Ver Faltas</a>
                 </div>
                 <div class="card-body">
@@ -109,10 +158,10 @@
                         {% if request.user.is_superuser %}<input type="hidden" name="area_id" value="{{ area.id }}">{% endif %}
                         <div class="input-group input-group-sm">
                             <input type="text" name="buscar_estudiante" value="{% if query_busqueda != 'DEUDORES' %}{{ query_busqueda }}{% endif %}" class="form-control" placeholder="Habitación, Nombre o Carnet...">
-                            <button class="btn btn-dark" type="submit">Buscar</button>
+                            <button class="btn btn-dark text-white fw-bold" type="submit" style="border: 2px solid #0f172a !important;">Buscar</button>
                         </div>
                         {% if query_busqueda %}
-                            <a href="?{% if request.user.is_superuser %}area_id={{ area.id }}{% endif %}" class="text-danger d-inline-block mt-1 small">Limpiar Filtros</a>
+                            <a href="?{% if request.user.is_superuser %}area_id={{ area.id }}{% endif %}" class="text-danger d-inline-block mt-1 small fw-bold">Limpiar Filtros</a>
                         {% endif %}
                     </form>
                     
@@ -128,10 +177,10 @@
                                     <small class="text-muted" style="font-size: 0.75rem;">{{ est.carrera }} | {{ est.carnet }}</small>
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge bg-light text-dark border me-1" style="font-size: 0.7rem;">Hab. {{ est.habitacion }}</span>
+                                    <span class="badge bg-light text-dark border border-secondary me-1" style="font-size: 0.7rem;">Hab. {{ est.habitacion }}</span>
                                     {% if user.is_superuser %}
-                                        <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-xs btn-outline-info p-1 border" style="font-size: 0.7rem;" title="Editar datos"><i class="fas fa-edit"></i></a>
-                                        <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-xs btn-outline-danger p-1 border" style="font-size: 0.7rem;" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }}?');" title="Eliminar becado"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-xs btn-outline-info p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" title="Editar datos"><i class="fas fa-edit text-info"></i></a>
+                                        <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-xs btn-outline-danger p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }}?');" title="Eliminar becado"><i class="fas fa-trash-alt text-danger"></i></a>
                                     {% endif %}
                                 </div>
                             </li>
@@ -143,8 +192,53 @@
             </div>
 
             {% if user.is_superuser %}
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white text-dark border-bottom">Tokens de Acceso Activos</div>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center bg-danger text-white">
+                    <span>Restricciones Académicas</span>
+                    <span class="badge bg-white text-dark small">Registros: {{ excepciones.count }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 230px; overflow-y: auto;">
+                        <table class="table table-sm table-hover align-middle mb-0 style-table">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Hab.</th>
+                                    <th>Día/Turno</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exc in excepciones %}
+                                <tr>
+                                    <td><strong style="font-size: 0.8rem;">{{ exc.estudiante.nombre }}</strong></td>
+                                    <td><span class="badge bg-light text-dark border" style="font-size: 0.65rem;">{{ exc.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="text-danger fw-bold" style="font-size: 0.75rem;">{{ exc.get_dia_semana_display }}</span><br>
+                                        <small class="text-muted" style="font-size: 0.7rem;">{{ exc.get_turno_bloqueado_display }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'acc_borrar_excepcion' exc.id %}" 
+                                           class="text-danger fw-bold small text-decoration-none" 
+                                           style="font-size: 0.75rem;"
+                                           onclick="return confirm('¿Eliminar esta restricción de clases para {{ exc.estudiante.nombre }}?');">
+                                            <i class="fas fa-times-circle"></i> Quitar
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted py-3 small fw-semibold">No hay horarios académicos bloqueados.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.is_superuser %}
+            <div class="card">
+                <div class="card-header">Tokens de Acceso Activos</div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush" style="max-height: 150px; overflow-y: auto;">
                         {% for cod in codigos_registro %}
@@ -169,9 +263,15 @@
         </div>
 
         <div class="col-md-8 mb-4">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white text-dark border-bottom">Cronograma de Asignaciones del Bloque</div>
+            <div class="card mb-4">
+                <div class="card-header">Cronograma de Asignaciones del Bloque</div>
                 <div class="card-body p-0">
+                    <div class="p-2 border-bottom bg-light">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0 text-muted" style="border: 2px solid #0f172a !important;"><i class="fas fa-search"></i></span>
+                            <input type="text" id="buscadorTablaAsignaciones" class="form-control border-start-0 bg-white" placeholder="Filtrar cronograma rápido por nombre o número de cuarto exacto..." style="border: 2px solid #0f172a !important; margin-bottom: 0px !important;">
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead>
@@ -185,25 +285,25 @@
                             </thead>
                             <tbody>
                                 {% for turno in turnos %}
-                                <tr>
+                                <tr class="fila-cronograma" data-estudiante="{{ turno.estudiante.nombre|lower }}" data-habitacion="{{ turno.estudiante.habitacion }}">
                                     <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M" }} - <small class="text-muted">{{ turno.get_turno_horario_display }}</small></td>
-                                    <td class="text-primary fw-medium">{{ turno.tarea.nombre_tarea }}</td>
+                                    <td class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</td>
                                     <td><strong>{{ turno.estudiante.nombre }}</strong> <br><small class="text-muted" style="font-size: 0.75rem;">Cuarto: {{ turno.estudiante.habitacion }}</small></td>
                                     <td>
                                         {% if turno.estado == 'PENDIENTE' %}
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0.5 px-1.5 fw-bold" style="font-size: 0.75rem;">✓</a>
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0.5 px-1.5 fw-bold" style="font-size: 0.75rem;">✗</a>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0.5 px-1.5 text-white">✓</a>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0.5 px-1.5 text-white">✗</a>
                                         {% else %}
                                             <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7rem;">{{ turno.get_estado_display }}</span>
-                                            <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none" style="font-size: 0.75rem;">Reiniciar</a>
+                                            <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none fw-bold" style="font-size: 0.75rem;">Reiniciar</a>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a href="{% url 'acc_borrar_turno' turno.id %}" class="text-danger small text-decoration-none" style="font-size: 0.75rem;" onclick="return confirm('¿Remover asignación?');">Eliminar</a>
+                                        <a href="{% url 'acc_borrar_turno' turno.id %}" class="text-danger small text-decoration-none fw-bold" style="font-size: 0.75rem;" onclick="return confirm('¿Remover asignación?');"><i class="fas fa-trash-alt"></i> Eliminar</a>
                                     </td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="5" class="text-center py-4 text-muted small">Sin turnos asignados en esta sección.</td></tr>
+                                <tr><td colspan="5" class="text-center py-4 text-muted small fw-semibold">Sin turnos asignados en esta sección.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -212,8 +312,8 @@
             </div>
 
             {% if user.is_superuser %}
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white text-dark border-bottom">Bitácora de Auditoría Residencial (Historial de Cambios)</div>
+            <div class="card">
+                <div class="card-header">Bitácora de Auditoría Residencial (Historial de Cambios)</div>
                 <div class="card-body p-0" style="max-height: 250px; overflow-y: auto;">
                     <div class="table-responsive">
                         <table class="table table-sm table-striped mb-0 style-table small">
@@ -230,11 +330,11 @@
                                 <tr>
                                     <td class="text-muted">{{ log.fecha_hora|date:"d/m H:i" }}</td>
                                     <td><strong>{{ log.usuario.username }}</strong></td>
-                                    <td><span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">{{ log.area_origen }}</span></td>
+                                    <td><span class="badge bg-light text-secondary border border-secondary" style="font-size: 0.65rem;">{{ log.area_origen }}</span></td>
                                     <td class="text-muted" style="font-size: 0.75rem;">{{ log.accion }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="4" class="text-center text-muted py-3 small">Aún no se registran movimientos en la bitácora.</td></tr>
+                                <tr><td colspan="4" class="text-center text-muted py-3 small fw-semibold">Aún no se registran movimientos en la bitácora.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -249,17 +349,17 @@
 {% if user.is_superuser %}
 <div class="modal fade" id="modalCodigo" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 p-2">
-            <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Crear Código para Administrador</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-content border-2 p-2" style="border: 2px solid #0f172a;">
+            <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Crear Código para Admin</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <form method="POST" action="{% url 'g_codigo' %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">Escribe un Código de Carnet Autorizado</label>
+                        <label class="form-label small fw-bold text-muted mb-1">Escribe un Código de Carnet Autorizado</label>
                         <input type="text" name="codigo" class="form-control" placeholder="Ej: 2023-0101U" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted">Área que va a tener a cargo</label>
+                        <label class="form-label small fw-bold text-muted mb-1">Área que va a tener a cargo</label>
                         <select name="area_permitida" class="form-select" required>
                             {% for a in areas_disponibles %}
                                 <option value="{{ a.id }}">{{ a.get_nombre_display }}</option>
@@ -275,10 +375,10 @@
 
 <div class="modal fade" id="modalEstudiante" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 p-2">
+        <div class="modal-content border-2 p-2" style="border: 2px solid #0f172a;">
             <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Registrar Nuevo Estudiante</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'g_estudiante' %}">{% csrf_token %}{{ form_estudiante.as_p }}<button type="submit" class="btn btn-success w-100 fw-bold">Guardar Alumno</button></form>
+                <form method="POST" action="{% url 'g_estudiante' %}">{% csrf_token %}{{ form_estudiante.as_p }}<button type="submit" class="btn btn-success w-100 text-white fw-bold">Guardar Alumno</button></form>
             </div>
         </div>
     </div>
@@ -287,10 +387,10 @@
 
 <div class="modal fade" id="modalExcepcion" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 p-2">
+        <div class="modal-content border-2 p-2" style="border: 2px solid #0f172a;">
             <div class="modal-header border-bottom"><h6 class="modal-title fw-bold">Registrar Horario Bloqueado</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'g_excepcion' %}">{% csrf_token %}{{ form_excepcion.as_p }}<button type="submit" class="btn btn-danger w-100 fw-bold">Guardar Bloqueo</button></form>
+                <form method="POST" action="{% url 'g_excepcion' %}">{% csrf_token %}{{ form_excepcion.as_p }}<button type="submit" class="btn btn-danger w-100 text-white fw-bold">Guardar Bloqueo</button></form>
             </div>
         </div>
     </div>
@@ -298,7 +398,7 @@
 
 <div class="modal fade" id="modalManual" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 p-2">
+        <div class="modal-content border-2 p-2" style="border: 2px solid #0f172a;">
             <div class="modal-header border-bottom">
                 <h6 class="modal-title fw-bold">Asignación Manual Directa</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -311,7 +411,7 @@
                     
                     {{ form_manual.as_p }}
                     
-                    <button type="submit" class="btn btn-dark w-100 fw-bold mt-2">Asignar Manualmente</button>
+                    <button type="submit" class="btn btn-dark w-100 text-white fw-bold mt-2">Asignar Manualmente</button>
                 </form>
             </div>
         </div>
@@ -325,6 +425,29 @@
         
         document.getElementById('manual_fecha_contexto').value = fechaActiva;
         document.getElementById('manual_turno_contexto').value = turnoActivo;
+    });
+
+    // Filtro inteligente para el cronograma sin mezclar cuarto 1 con 11
+    document.getElementById('buscadorTablaAsignaciones').addEventListener('keyup', function() {
+        const busqueda = this.value.toLowerCase().trim();
+        const filas = document.querySelectorAll('.fila-cronograma');
+        
+        filas.forEach(fila => {
+            const nombre = fila.getAttribute('data-estudiante');
+            const habitacion = fila.getAttribute('data-habitacion').trim();
+            
+            if (busqueda === '') {
+                fila.style.display = '';
+                return;
+            }
+            
+            // Si calza exacto con el número de habitación, o si el nombre incluye la búsqueda, se queda
+            if (habitacion === busqueda || nombre.includes(busqueda)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
     });
 </script>
 {% endblock %}
