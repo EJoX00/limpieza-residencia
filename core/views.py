@@ -97,7 +97,6 @@ def panel_control(request):
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
     elif area.nombre == 'BANOS_M':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='F')
-    # 💡 NOTA: Si el área es JARDINES o AREAS_V se salta los filtros y te muestra la lista mixta
         
     estudiantes_manual_qs = estudiantes_manual_qs.exclude(
         turnoasignado__estado='CUMPLIDO'
@@ -110,6 +109,11 @@ def panel_control(request):
     codigos_registro = None
     if request.user.is_superuser:
         codigos_registro = CodigoRegistro.objects.all().order_by('-usado')
+
+    # 🚫 ALIMENTAMOS LA VARIABLE DE EXCEPCIONES AL CONTEXTO (SOLO SI SOS SUPERUSUARIO)
+    excepciones = None
+    if request.user.is_superuser:
+        excepciones = ExcepcionHorario.objects.all().order_by('estudiante__nombre')
 
     historial = HistorialAccion.objects.all().order_by('-fecha_hora')[:15]
     fecha_hoy = datetime.date.today().strftime('%Y-%m-%d')
@@ -125,7 +129,8 @@ def panel_control(request):
         'form_manual': form_manual,
         'codigos_registro': codigos_registro,
         'historial': historial,
-        'fecha_hoy': fecha_hoy
+        'fecha_hoy': fecha_hoy,
+        'excepciones': excepciones
     })
 
 
@@ -235,6 +240,10 @@ def g_estudiante(request):
 
 @login_required
 def g_excepcion(request):
+    if not request.user.is_superuser:
+        messages.error(request, "Acceso restringido. Solo el Superusuario puede registrar excepciones horarias.")
+        return redirect('panel_control')
+
     if request.method == 'POST':
         form = ExcepcionForm(request.POST)
         if form.is_valid():
@@ -247,6 +256,26 @@ def g_excepcion(request):
             messages.success(request, "Excepción de horario académica guardada.")
         else:
             messages.error(request, "Error: Es posible que este alumno ya tenga esa excepción registrada.")
+    return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
+
+
+@login_required
+def acc_borrar_excepcion(request, excepcion_id):
+    if not request.user.is_superuser:
+        messages.error(request, "Acceso denegado. Función exclusiva del Superusuario.")
+        return redirect('panel_control')
+        
+    excepcion = get_object_or_404(ExcepcionHorario, id=excepcion_id)
+    nombre_estudiante = excepcion.estudiante.nombre
+    dia_str = excepcion.get_dia_semana_display()
+    
+    HistorialAccion.objects.create(
+        usuario=request.user,
+        accion=f"Eliminó bloqueo académico de {nombre_estudiante} para el día {dia_str}",
+        area_origen="Control Global"
+    )
+    excepcion.delete()
+    messages.success(request, f"Bloqueo horario de {nombre_estudiante} eliminado correctamente.")
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 

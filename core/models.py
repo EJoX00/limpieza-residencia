@@ -35,16 +35,12 @@ class CodigoRegistro(models.Model):
 
 class Estudiante(models.Model):
     GENERO_CHOICES = [('M', 'Masculino'), ('F', 'Femenino')]
-    
-    # Tus nuevos campos solicitados:
     nombre = models.CharField(max_length=150)
     genero = models.CharField(max_length=1, choices=GENERO_CHOICES)
-    # CORRECCIÓN: Quitamos unique=True para permitir múltiples ingresos con 'N/A' (manejamos la unicidad real en forms.py)
-    carnet = models.CharField(max_length=30) # Ej: 2023-1237U o N/A
+    carnet = models.CharField(max_length=30) 
     carrera = models.CharField(max_length=100)
-    habitacion = models.CharField(max_length=20) # Ej: B-204
+    habitacion = models.CharField(max_length=20) 
     
-    # Sistema de colas de rotación justa
     posicion_cola_banos = models.IntegerField(default=0)
     posicion_cola_verdes = models.IntegerField(default=0)
 
@@ -57,7 +53,12 @@ class ExcepcionHorario(models.Model):
         (1, 'Lunes'), (2, 'Martes'), (3, 'Miércoles'),
         (4, 'Jueves'), (5, 'Viernes'), (6, 'Sábado'), (7, 'Domingo')
     ]
-    TURNO_CHOICES = [('TARDE', 'Tarde (2:00 PM)'), ('NOCHE', 'Noche')]
+    # 🚀 AGREGADO EL TURNO DE LA MAÑANA DE FORMA COMPATIBLE
+    TURNO_CHOICES = [
+        ('MANANA', 'Mañana (6:00 AM)'),
+        ('TARDE', 'Tarde (2:00 PM)'),
+        ('NOCHE', 'Noche')
+    ]
     
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name='excepciones')
     dia_semana = models.IntegerField(choices=DIA_CHOICES)
@@ -93,6 +94,7 @@ class TurnoAsignado(models.Model):
     def __str__(self):
         return f"{self.fecha} | {self.turno_horario} | {self.estudiante.nombre} -> {self.tarea.nombre_tarea}"
     
+
 class HistorialAccion(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     accion = models.CharField(max_length=255)
@@ -100,6 +102,5 @@ class HistorialAccion(models.Model):
     area_origen = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
-        # Usamos strftime nativo de Python para evitar el error de "date"
         formato_fecha = self.fecha_hora.strftime('%d/%m %H:%M')
         return f"{formato_fecha} | {self.usuario.username} -> {self.accion}"
