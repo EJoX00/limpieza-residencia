@@ -2,32 +2,33 @@
 {% load static %}
 
 {% block content %}
-<nav class="navbar navbar-dark bg-transparent fixed-top">
-    <div class="container-fluid d-flex justify-content-end pe-4 pt-3">
-        <button class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" 
-                type="button" 
-                data-bs-toggle="offcanvas" 
-                data-bs-target="#menuLateralAdmin" 
-                aria-controls="menuLateralAdmin"
-                style="width: 50px; height: 50px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15); z-index: 1050;">
-            <i class="fas fa-bars fs-4 text-white"></i>
-        </button>
-    </div>
-</nav>
+<div class="position-fixed top-0 end-0 pe-4 pt-3 d-flex align-items-center gap-2" style="z-index: 1060;">
+    <a href="{% url 'cartelera_publica' %}" 
+       class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+       style="width: 48px; height: 48px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15);"
+       title="Ver Cartelera Pública">
+        <i class="fas fa-home text-white fs-5"></i>
+    </a>
+
+    <button class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" 
+            type="button" 
+            data-bs-toggle="offcanvas" 
+            data-bs-target="#menuLateralAdmin" 
+            aria-controls="menuLateralAdmin"
+            style="width: 48px; height: 48px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15);">
+        <i class="fas fa-bars text-white fs-5"></i>
+    </button>
+</div>
 
 <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
     <div class="offcanvas-header border-bottom border-secondary">
-        <h5 class="offcanvas-title fw-bold" id="menuLateralAdminLabel">🧼 Sistema de Limpieza</h5>
+        <h5 class="offcanvas-title fw-bold" id="menuLateralAdminLabel">⚙️ Consola de Acceso</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between py-4">
         <div class="d-grid gap-3">
-            <a href="{% url 'cartelera_publica' %}" class="btn btn-outline-secondary text-start fw-bold py-2.5">
-                <i class="fas fa-home me-2 text-info"></i> Ver Cartelera Pública
-            </a>
-
             {% if user.is_authenticated %}
-                <div class="bg-secondary bg-opacity-25 p-3 rounded my-2 border border-secondary text-center">
+                <div class="bg-secondary bg-opacity-25 p-3 rounded border border-secondary text-center">
                     <span class="small text-muted d-block">Administrador Activo</span>
                     <strong class="text-warning fs-5">👤 Admin. E.Rios</strong>
                 </div>
@@ -35,7 +36,7 @@
                     <i class="fas fa-th-large me-2"></i> Mi Panel de Área
                 </a>
             {% else %}
-                <div class="text-muted small text-center my-2 px-2">Accede a la consola de administración para gestionar turnos y estudiantes.</div>
+                <div class="text-muted small text-center px-2">Accede a la consola de administración de la residencia para gestionar turnos.</div>
                 <a href="{% url 'login' %}" class="btn btn-outline-light fw-bold py-2.5 text-start">
                     <i class="fas fa-sign-in-alt me-2 text-primary"></i> Ingresar al Sistema
                 </a>
@@ -56,7 +57,7 @@
     </div>
 </div>
 
-<div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5 rounded shadow">
+<div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5">
     <div class="hero-bg position-absolute top-0 start-0 w-100 h-100"></div>
     <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
     <div class="hero-content position-relative z-index-2 px-3 animate-fade-in">
@@ -69,167 +70,166 @@
     </div>
 </div>
 
-<div class="row mb-4 text-center text-md-start">
-    <div class="col-12">
-        <h2 class="fw-bold text-dark d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-            📊 Roles de Limpieza Asignados
-        </h2>
-        <p class="text-muted">Filtra rápido seleccionando tu área correspondiente abajo.</p>
-    </div>
-</div>
-
-<div class="card shadow-sm border-0 mb-4 bg-light">
-    <div class="card-body py-3">
-        <div class="input-group">
-            <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-            <input type="text" id="buscadorCartelera" class="form-control border-start-0" placeholder="Escribe tu nombre o número de habitación para filtrar rápido...">
+<div class="container px-4">
+    <div class="row mb-4 text-center text-md-start">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark">📊 Roles de Limpieza Asignados</h2>
+            <p class="text-muted">Filtra rápido seleccionando tu área correspondiente abajo.</p>
         </div>
     </div>
-</div>
 
-<ul class="nav nav-pills nav-justified mb-4 shadow-sm rounded bg-white p-1" id="tabCartelera" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active fw-bold text-uppercase py-2.5" id="hombres-tab" data-bs-toggle="tab" data-bs-target="#sec-hombres" type="button" role="tab">
-            🚹 Baño Hombres
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link fw-bold text-uppercase py-2.5" id="mujeres-tab" data-bs-toggle="tab" data-bs-target="#sec-mujeres" type="button" role="tab">
-            🚺 Baño Mujeres
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link fw-bold text-uppercase py-2.5" id="verdes-tab" data-bs-toggle="tab" data-bs-target="#sec-verdes" type="button" role="tab">
-            🌳 Áreas Verdes
-        </button>
-    </li>
-</ul>
-
-<div class="tab-content" id="contenidoCartelera">
-    
-    <div class="tab-pane fade show active" id="sec-hombres" role="tabpanel">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Sección Varones</div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Turno</th>
-                            <th>Tarea Específica</th>
-                            <th>Estudiante Asignado</th>
-                            <th>Habitación</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for turno in turnos %}
-                            {% if turno.tarea.area.nombre == 'BANOS_H' %}
-                            <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                <td>
-                                    <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
-                                        {{ turno.get_estado_display }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endif %}
-                        {% empty %}
-                            <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <div class="card shadow-sm border-0 mb-4 bg-light">
+        <div class="card-body py-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                <input type="text" id="buscadorCartelera" class="form-control border-start-0" placeholder="Escribe tu nombre o número de habitación para filtrar rápido...">
             </div>
         </div>
     </div>
 
-    <div class="tab-pane fade" id="sec-mujeres" role="tabpanel">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Sección Damas</div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Turno</th>
-                            <th>Tarea Específica</th>
-                            <th>Estudiante Asignado</th>
-                            <th>Habitación</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for turno in turnos %}
-                            {% if turno.tarea.area.nombre == 'BANOS_M' %}
-                            <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                <td>
-                                    <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
-                                        {{ turno.get_estado_display }}
-                                    </span>
-                                </td>
+    <ul class="nav nav-pills nav-justified mb-4 shadow-sm rounded bg-white p-1" id="tabCartelera" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-uppercase py-2.5" id="hombres-tab" data-bs-toggle="tab" data-bs-target="#sec-hombres" type="button" role="tab">
+                🚹 Baño Hombres
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-uppercase py-2.5" id="mujeres-tab" data-bs-toggle="tab" data-bs-target="#sec-mujeres" type="button" role="tab">
+                🚺 Baño Mujeres
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-uppercase py-2.5" id="verdes-tab" data-bs-toggle="tab" data-bs-target="#sec-verdes" type="button" role="tab">
+                🌳 Áreas Verdes
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content pb-5" id="contenidoCartelera">
+        <div class="tab-pane fade show active" id="sec-hombres" role="tabpanel">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white fw-bold">📅 Sección Varones</div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Turno</th>
+                                <th>Tarea Específica</th>
+                                <th>Estudiante Asignado</th>
+                                <th>Habitación</th>
+                                <th>Estado</th>
                             </tr>
-                            {% endif %}
-                        {% empty %}
-                            <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for turno in turnos %}
+                                {% if turno.tarea.area.nombre == 'BANOS_H' %}
+                                <tr class="fila-turno">
+                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="tab-pane fade" id="sec-verdes" role="tabpanel">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Patios y Exteriores</div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Turno</th>
-                            <th>Tarea Específica</th>
-                            <th>Estudiante Asignado</th>
-                            <th>Habitación</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for turno in turnos %}
-                            {% if turno.tarea.area.nombre == 'AREAS_V' %}
-                            <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
-                                <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
-                                <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
-                                <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
-                                <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
-                                <td>
-                                    <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
-                                        {{ turno.get_estado_display }}
-                                    </span>
-                                </td>
+        <div class="tab-pane fade" id="sec-mujeres" role="tabpanel">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white fw-bold">📅 Sección Damas</div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Turno</th>
+                                <th>Tarea Específica</th>
+                                <th>Estudiante Asignado</th>
+                                <th>Habitación</th>
+                                <th>Estado</th>
                             </tr>
-                            {% endif %}
-                        {% empty %}
-                            <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for turno in turnos %}
+                                {% if turno.tarea.area.nombre == 'BANOS_M' %}
+                                <tr class="fila-turno">
+                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="sec-verdes" role="tabpanel">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white fw-bold">📅 Patios y Exteriores</div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Turno</th>
+                                <th>Tarea Específica</th>
+                                <th>Estudiante Asignado</th>
+                                <th>Habitación</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for turno in turnos %}
+                                {% if turno.tarea.area.nombre == 'AREAS_V' %}
+                                <tr class="fila-turno">
+                                    <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
+                                    <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
+                                    <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
+                                    <td class="cuarto-estudiante"><span class="badge bg-info text-dark">Hab: {{ turno.estudiante.habitacion }}</span></td>
+                                    <td>
+                                        <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% elif turno.estado == 'FALTO' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                            {{ turno.get_estado_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% empty %}
+                                <tr><td colspan="6" class="text-center py-4 text-muted">No hay turnos registrados en esta sección.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .hero-section { height: 75vh; background-color: #111; }
+    .hero-section { height: 75vh; background-color: #111; margin-top: -16px; }
     .hero-bg { background-image: url("{% static 'fondo-uni.png' %}"); background-size: cover; background-position: center; transition: transform 0.1s ease-out, opacity 0.1s ease-out; will-change: transform, opacity; }
     .z-index-2 { z-index: 2; }
     .text-shadow { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); }
@@ -241,11 +241,11 @@
     .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
     .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
     
-    /* Efecto hover elegante para el botón de tres rayitas flotante */
-    .navbar .btn-dark:hover {
-        transform: scale(1.08);
+    /* Hover animado para los botones circulares flotantes */
+    .position-fixed .btn:hover {
+        transform: scale(1.1);
         background-color: #000 !important;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.4) !important;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.5) !important;
         transition: all 0.2s ease;
     }
 </style>
