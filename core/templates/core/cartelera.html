@@ -14,8 +14,7 @@
             type="button" 
             data-bs-toggle="offcanvas" 
             data-bs-target="#menuLateralAdmin" 
-            aria-controls="menuLateralAdmin"
-            style="width: 48px; height: 48px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15);">
+            aria-controls="menuLateralAdmin">
         <i class="fas fa-bars text-white fs-5"></i>
     </button>
 </div>
@@ -71,10 +70,15 @@
 </div>
 
 <div class="container px-4">
-    <div class="row mb-4 text-center text-md-start">
-        <div class="col-12">
+    <div class="row mb-4 align-items-center text-center text-md-start">
+        <div class="col-md-8">
             <h2 class="fw-bold text-dark">📊 Roles de Limpieza Asignados</h2>
             <p class="text-muted">Filtra rápido seleccionando tu área correspondiente abajo.</p>
+        </div>
+        <div class="col-md-4 text-md-end text-center mt-2 mt-md-0">
+            <button type="button" class="btn btn-primary fw-bold shadow py-2 px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#modalCalendarioBurbuja">
+                <i class="matrix-icon fas fa-calendar-alt me-2"></i> Ver Vista Calendario 📅
+            </button>
         </div>
     </div>
 
@@ -124,7 +128,7 @@
                         <tbody>
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_H' %}
-                                <tr class="fila-turno">
+                                <tr class="fila-turno" data-area="BANOS_H" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
                                     <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                     <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                     <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
@@ -164,7 +168,7 @@
                         <tbody>
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_M' %}
-                                <tr class="fila-turno">
+                                <tr class="fila-turno" data-area="BANOS_M" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
                                     <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                     <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                     <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
@@ -204,7 +208,7 @@
                         <tbody>
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'AREAS_V' %}
-                                <tr class="fila-turno">
+                                <tr class="fila-turno" data-area="AREAS_V" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
                                     <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                     <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                     <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
@@ -228,6 +232,25 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalCalendarioBurbuja" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title fw-bold"><i class="fas fa-calendar-alt text-warning me-2"></i>Calendario de Roles Mensual</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 bg-white">
+                <div class="alert alert-info py-2 small border-0 d-flex align-items-center gap-2">
+                    <span>💡 <strong>Tip:</strong> Los días marcados en <strong class="text-danger">Rojo</strong> representan fechas donde no hubo limpiezas completadas. Toca un día para ver los asignados.</span>
+                </div>
+                <div id="fullCalendarContenedor" style="max-height: 65vh;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
 <style>
     .hero-section { height: 75vh; background-color: #111; margin-top: -16px; }
     .hero-bg { background-image: url("{% static 'fondo-uni.png' %}"); background-size: cover; background-position: center; transition: transform 0.1s ease-out, opacity 0.1s ease-out; will-change: transform, opacity; }
@@ -240,17 +263,20 @@
     .nav-pills .nav-link { color: #495057; border: 1px solid transparent; background: none; transition: all 0.2s ease-in-out; }
     .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
     .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
+    .position-fixed .btn:hover { transform: scale(1.1); background-color: #000 !important; box-shadow: 0 8px 16px rgba(0,0,0,0.5) !important; transition: all 0.2s ease; }
     
-    /* Hover animado para los botones circulares flotantes */
-    .position-fixed .btn:hover {
-        transform: scale(1.1);
-        background-color: #000 !important;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.5) !important;
-        transition: all 0.2s ease;
-    }
+    /* Estilos dinámicos del calendario FullCalendar */
+    .fc .fc-toolbar-title { font-size: 1.25rem !important; font-weight: bold !important; color: #212529; }
+    .fc .fc-button-primary { background-color: #212529 !important; border-color: #212529 !important; }
+    .fc .fc-button-primary:hover { background-color: #000 !important; }
+    .fc-daygrid-day.dia-vacio-rojo { background-color: #fce8e6 !important; } /* Color rojo suave para días vacíos */
+    .fc-daygrid-day.dia-vacio-rojo .fc-daygrid-day-number { color: #c5221f !important; font-weight: bold; }
 </style>
 
 <script>
+    let calendarioInstancia = null;
+
+    // 🎭 EFECTO ZOOM PARALLAX
     window.addEventListener('scroll', function() {
         const scrollPosition = window.scrollY;
         const heroBg = document.querySelector('.hero-bg');
@@ -267,6 +293,7 @@
         }
     });
 
+    // 🔍 BUSCADOR EN VIVO DE LAS TABLAS
     document.getElementById('buscadorCartelera').addEventListener('keyup', function() {
         const busqueda = this.value.toLowerCase().trim();
         const filas = document.querySelectorAll('.fila-turno');
@@ -277,6 +304,108 @@
                 fila.style.display = '';
             } else {
                 fila.style.display = 'none';
+            }
+        });
+    });
+
+    // 📅 MOTOR ROBOT DEL CALENDARIO FLOTANTE
+    function inicializarCalendarioBurbuja() {
+        const elementoCalendario = document.getElementById('fullCalendarContenedor');
+        
+        // 1. Identificamos qué pestaña de género está activa ahorita en la pantalla
+        const tabActiva = document.querySelector('.nav-pills .nav-link.active').id;
+        let areaFiltro = 'BANOS_H';
+        if (tabActiva === 'mujeres-tab') areaFiltro = 'BANOS_M';
+        if (tabActiva === 'verdes-tab') areaFiltro = 'AREAS_V';
+
+        // 2. Extraemos todos los turnos impresos en el HTML para mapearlos
+        const filasTurnos = document.querySelectorAll('.fila-turno');
+        let eventos = [];
+        let registroDiasLimpios = {}; // Diccionario para verificar cumplimiento por fecha
+
+        filasTurnos.forEach(fila => {
+            const areaFila = fila.getAttribute('data-area');
+            const fechaFila = fila.getAttribute('data-fecha');
+            const estudiante = fila.getAttribute('data-estudiante');
+            const tarea = fila.getAttribute('data-tarea');
+            const estado = fila.getAttribute('data-estado');
+
+            if (areaFila === areaFiltro) {
+                // Registramos si este día ya tiene al menos una limpieza completada
+                if (!registroDiasLimpios[fechaFila]) {
+                    registroDiasLimpios[fechaFila] = false;
+                }
+                if (estado === 'CUMPLIDO') {
+                    registroDiasLimpios[fechaFila] = true;
+                }
+
+                eventos.push({
+                    title: `👤 ${estudiante} (${tarea})`,
+                    start: fechaFila,
+                    allDay: true,
+                    extendedProps: { estado: estado, estudiante: estudiante, tarea: tarea }
+                });
+            }
+        });
+
+        // 3. Si ya existía un calendario abierto antes, lo destruimos para redibujar el nuevo género
+        if (calendarioInstancia) {
+            calendarioInstancia.destroy();
+        }
+
+        // 4. Configuramos FullCalendar con las directrices de diseño
+        calendarioInstancia = new FullCalendar.Calendar(elementoCalendario, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            firstDay: 1, // La semana inicia en Lunes
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: ''
+            },
+            buttonText: { today: 'Hoy' },
+            events: eventos,
+            
+            // 🎯 REGLA DE DETECCIÓN: Pintar los días vacíos o fallidos en rojo suave
+            dayCellDidMount: function(info) {
+                const fechaCelda = info.date.toISOString().split('T')[0];
+                
+                // Si la fecha pertenece al listado del área pero nadie cumplió, inyectamos la clase roja
+                if (registroDiasLimpios[fechaCelda] === false) {
+                    info.el.classList.add('dia-vacio-rojo');
+                }
+            },
+
+            // 🎯 INTERACCIÓN: Al tocar el día, despliega la lista de asignados en un cuadro limpio
+            dateClick: function(info) {
+                let turnosDelDia = eventos.filter(e => e.start === info.dateStr);
+                if (turnosDelDia.length > 0) {
+                    let mensaje = `📅 Asignaciones para el ${info.dateStr}:\n\n`;
+                    turnosDelDia.forEach((t, idx) => {
+                        mensaje += `${idx + 1}. ${t.extendedProps.estudiante} ➡️ Tarea: ${t.extendedProps.tarea} [${t.extendedProps.estado}]\n`;
+                    });
+                    alert(mensaje);
+                } else {
+                    alert(`📅 El día ${info.dateStr} no tiene programada ninguna limpieza para esta área.`);
+                }
+            }
+        });
+
+        calendarioInstancia.render();
+    }
+
+    // Activamos la reconstrucción del calendario cada vez que abren el modal burbuja
+    document.getElementById('modalCalendarioBurbuja').addEventListener('shown.bs.modal', function () {
+        inicializarCalendarioBurbuja();
+        // Ajuste de tamaño automático por comportamiento responsivo de FullCalendar
+        if (calendarioInstancia) calendarioInstancia.updateSize();
+    });
+
+    // Re-renderiza el calendario de forma dinámica si el usuario cambia de pestaña de área con el modal abierto
+    document.querySelectorAll('.nav-pills .nav-link').forEach(tab => {
+        tab.addEventListener('shown.bs.tab', function() {
+            if (document.getElementById('modalCalendarioBurbuja').classList.contains('show')) {
+                inicializarCalendarioBurbuja();
             }
         });
     });
