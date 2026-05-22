@@ -265,7 +265,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% accept_turnos_mujeres_loop %}
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'BANOS_M' %}
                                 <tr class="fila-turno" data-area="BANOS_M" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
@@ -347,7 +346,7 @@
                             {% for turno in turnos %}
                                 {% if turno.tarea.area.nombre == 'JARDINES' %}
                                 <tr class="fila-turno" data-area="JARDINES" data-fecha="{{ turno.fecha|date:'Y-m-d' }}" data-estudiante="{{ turno.estudiante.nombre }}" data-tarea="{{ turno.tarea.nombre_tarea }}" data-estado="{{ turno.estado }}">
-                                    <td class="fw-bold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
+                                    <td class="fw-semibold text-dark">{{ turno.fecha|date:"d M Y" }}</td>
                                     <td><span class="badge bg-light text-dark border px-2 py-1 fw-semibold" style="border-color: #0f172a !important;">{{ turno.get_turno_horario_display }}</span></td>
                                     <td><span class="text-info fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
                                     <td class="nombre-estudiante fw-semibold">{{ turno.estudiante.nombre }}</td>
