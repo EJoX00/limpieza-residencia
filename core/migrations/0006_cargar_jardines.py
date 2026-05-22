@@ -4,10 +4,11 @@ def insertar_jardines_y_tareas(apps, schema_editor):
     Area = apps.get_model('core', 'Area')
     Tarea = apps.get_model('core', 'Tarea')
 
-    # 🚀 BLINDAJE ANTI-CHOQUES: Buscamos por el campo único 'nombre' 
-    # para evitar que intente duplicar llaves primarias en Supabase
+    # 🎯 FIX DEFINITIVO: Forzamos el ID=10 para saltarnos el contador descalibrado de Supabase.
+    # Si ya existe por un despliegue previo, simplemente lo obtiene sin chocar.
     area_jardines, created = Area.objects.get_or_create(
-        nombre='JARDINES'
+        nombre='JARDINES',
+        defaults={'id': 10}
     )
 
     # Creamos su primera tarea correspondiente de forma segura
