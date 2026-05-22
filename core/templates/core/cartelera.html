@@ -2,34 +2,46 @@
 {% load static %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
-    <div class="container">
-        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'cartelera_publica' %}">
-            🧼 Sistema de Limpieza
-        </a>
-        <button class="navbar-toggler border-0 fs-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#menuLateralAdmin" aria-controls="menuLateralAdmin">
-            <span class="navbar-toggler-icon"></span>
+<nav class="navbar navbar-dark bg-transparent fixed-top">
+    <div class="container-fluid d-flex justify-content-end pe-4 pt-3">
+        <button class="btn btn-dark btn-lg rounded-circle shadow-lg d-flex align-items-center justify-content-center" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#menuLateralAdmin" 
+                aria-controls="menuLateralAdmin"
+                style="width: 50px; height: 50px; background-color: #212529; border: 1px solid rgba(255,255,255,0.15); z-index: 1050;">
+            <i class="fas fa-bars fs-4 text-white"></i>
         </button>
     </div>
 </nav>
 
 <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="menuLateralAdmin" aria-labelledby="menuLateralAdminLabel">
     <div class="offcanvas-header border-bottom border-secondary">
-        <h5 class="offcanvas-title fw-bold" id="menuLateralAdminLabel">⚙️ Consola de Acceso</h5>
+        <h5 class="offcanvas-title fw-bold" id="menuLateralAdminLabel">🧼 Sistema de Limpieza</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body d-flex flex-column justify-content-between py-4">
         <div class="d-grid gap-3">
+            <a href="{% url 'cartelera_publica' %}" class="btn btn-outline-secondary text-start fw-bold py-2.5">
+                <i class="fas fa-home me-2 text-info"></i> Ver Cartelera Pública
+            </a>
+
             {% if user.is_authenticated %}
-                <div class="bg-secondary bg-opacity-25 p-3 rounded mb-2 border border-secondary text-center">
+                <div class="bg-secondary bg-opacity-25 p-3 rounded my-2 border border-secondary text-center">
                     <span class="small text-muted d-block">Administrador Activo</span>
                     <strong class="text-warning fs-5">👤 Admin. E.Rios</strong>
                 </div>
-                <a href="{% url 'panel_control' %}" class="btn btn-success fw-bold py-2 shadow-sm"><i class="fas fa-th-large me-2"></i>Mi Panel de Área</a>
+                <a href="{% url 'panel_control' %}" class="btn btn-success fw-bold py-2.5 shadow-sm text-start">
+                    <i class="fas fa-th-large me-2"></i> Mi Panel de Área
+                </a>
             {% else %}
-                <div class="text-muted small text-center mb-2">Ingresa tus credenciales para gestionar los turnos de tu área.</div>
-                <a href="{% url 'login' %}" class="btn btn-outline-light fw-bold py-2"><i class="fas fa-sign-in-alt me-2"></i>Ingresar al Sistema</a>
-                <a href="{% url 'registro_admin' %}" class="btn btn-primary fw-bold py-2 shadow-sm"><i class="fas fa-user-plus me-2"></i>Registro Admin</a>
+                <div class="text-muted small text-center my-2 px-2">Accede a la consola de administración para gestionar turnos y estudiantes.</div>
+                <a href="{% url 'login' %}" class="btn btn-outline-light fw-bold py-2.5 text-start">
+                    <i class="fas fa-sign-in-alt me-2 text-primary"></i> Ingresar al Sistema
+                </a>
+                <a href="{% url 'registro_admin' %}" class="btn btn-primary fw-bold py-2.5 shadow-sm text-start">
+                    <i class="fas fa-user-plus me-2"></i> Registro Admin
+                </a>
             {% endif %}
         </div>
 
@@ -37,7 +49,7 @@
         <div class="d-grid border-top border-secondary pt-4">
             <form action="{% url 'logout' %}" method="POST" class="d-grid">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-outline-danger fw-bold py-2"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
+                <button type="submit" class="btn btn-outline-danger fw-bold py-2.5"><i class="fas fa-power-off me-2"></i>Cerrar Sesión</button>
             </form>
         </div>
         {% endif %}
@@ -217,8 +229,7 @@
 </div>
 
 <style>
-    body { padding-top: 56px; } /* Evita que la barra fija tape el Hero section */
-    .hero-section { height: 70vh; background-color: #111; }
+    .hero-section { height: 75vh; background-color: #111; }
     .hero-bg { background-image: url("{% static 'fondo-uni.png' %}"); background-size: cover; background-position: center; transition: transform 0.1s ease-out, opacity 0.1s ease-out; will-change: transform, opacity; }
     .z-index-2 { z-index: 2; }
     .text-shadow { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); }
@@ -229,6 +240,14 @@
     .nav-pills .nav-link { color: #495057; border: 1px solid transparent; background: none; transition: all 0.2s ease-in-out; }
     .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
     .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
+    
+    /* Efecto hover elegante para el botón de tres rayitas flotante */
+    .navbar .btn-dark:hover {
+        transform: scale(1.08);
+        background-color: #000 !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4) !important;
+        transition: all 0.2s ease;
+    }
 </style>
 
 <script>
