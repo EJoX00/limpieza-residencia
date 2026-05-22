@@ -1,21 +1,19 @@
 from django.db import migrations
 
 def insertar_jardines_y_tareas(apps, schema_editor):
-    # Obtenemos los modelos dinámicamente desde el historial
     Area = apps.get_model('core', 'Area')
     Tarea = apps.get_model('core', 'Tarea')
 
-    # 1. Creamos o actualizamos el Área de JARDINES
-    area_jardines, created = Area.objects.update_or_create(
-        nombre='JARDINES',
-        defaults={}
+    # 🚀 BLINDAJE ANTI-CHOQUES: Buscamos por el campo único 'nombre' 
+    # para evitar que intente duplicar llaves primarias en Supabase
+    area_jardines, created = Area.objects.get_or_create(
+        nombre='JARDINES'
     )
 
-    # 2. Le creamos su primera tarea correspondiente
-    Tarea.objects.update_or_create(
+    # Creamos su primera tarea correspondiente de forma segura
+    Tarea.objects.get_or_create(
         nombre_tarea='Limpieza y riego de maceteros internos',
-        area=area_jardines,
-        defaults={}
+        area=area_jardines
     )
 
 def revertir_jardines(apps, schema_editor):
@@ -25,7 +23,6 @@ def revertir_jardines(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        # 🎯 CORRECCIÓN: Ahora depende estrictamente de tu última migración real
         ('core', '0005_alter_area_nombre'), 
     ]
 
