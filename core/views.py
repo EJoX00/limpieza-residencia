@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Count
-from django.db.models.functions import Cast   # 🚀 CORRECCIÓN: Para forzar ordenamiento numérico real
-from django.db.models import IntegerField      # 🚀 CORRECCIÓN: Para forzar ordenamiento numérico real
+from django.db.models.functions import Cast   
+from django.db.models import IntegerField      
 from .models import TurnoAsignado, CodigoRegistro, PerfilAdministrador, Tarea, Estudiante, ExcepcionHorario, Area, HistorialAccion
 from .forms import RegistroAdminForm, EstudianteForm, ExcepcionForm, AsignacionManualForm
 from .services import generar_turnos_para_fecha
@@ -12,7 +12,6 @@ import datetime
 
 def cartelera_publica(request):
     """Vista pública (Cartelera) abierta para toda la residencia."""
-    # Ordena primero por fecha, luego numéricamente por habitación y luego alfabéticamente por nombre
     turnos = TurnoAsignado.objects.all().annotate(
         habitacion_int=Cast('estudiante__habitacion', output_field=IntegerField())
     ).order_by('-fecha', 'habitacion_int', 'estudiante__nombre')
@@ -88,7 +87,6 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
-    # 🚀 CONTROL ABSOLUTO DE LA ASIGNACIÓN MANUAL (GÉNERO + EXCLUSIÓN + ORDEN NUMÉRICO)
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
     
@@ -102,8 +100,8 @@ def panel_control(request):
     estudiantes_manual_qs = estudiantes_manual_qs.exclude(
         turnoasignado__estado='CUMPLIDO'
     ).annotate(
-        habitacion_num=Cast('habitacion', output_field=IntegerField())  # 🎯 Forzamos casteo a entero
-    ).distinct().order_by('habitacion_num', 'nombre')  # 🎯 Ordenación residencial real
+        habitacion_num=Cast('habitacion', output_field=IntegerField())  
+    ).distinct().order_by('habitacion_num', 'nombre')  
     
     form_manual.fields['estudiante'].queryset = estudiantes_manual_qs
     

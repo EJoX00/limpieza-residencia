@@ -7,10 +7,10 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
     """
     Busca de forma automática, justa e infinita a los estudiantes necesarios 
     para cubrir las tareas de un área en una fecha y turno específicos.
-    Respeta estrictamente los géneros por baños y balancea 4H/4M en Áreas Verdes.
+    Respeta estrictamente los géneros por baños, balancea 4H/4M en Áreas Verdes
+    y obliga una patrulla mixta de 2H/2M en Jardines Internos.
     """
     # Validar si existen tareas en esta área antes de hacer nada
-    # CORRECCIÓN: Quitamos .get_nombre_display() directo de la excepción para evitar bugs de atributos
     tareas = Tarea.objects.filter(area=area)
     if not tareas.exists():
         raise Exception(f"No hay tareas registradas en la base de datos para el área: {area}. Debes crearlas primero.")
@@ -22,16 +22,18 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
     with transaction.atomic():
         for tarea in tareas:
             # 🚀 AJUSTE DE GÉNEROS Y REPETICIONES AUTOMÁTICAS
-            # Creamos una lista de diccionarios que le dice al robot exactamente el género que ocupamos en cada cupo
             if area.nombre == 'AREAS_V':
                 # Si es áreas verdes, obligamos al bot a buscar 4 varones (M) y 4 mujeres (F)
                 cupos_requeridos = [{'genero': 'M'} for _ in range(4)] + [{'genero': 'F'} for _ in range(4)]
+            elif area.nombre == 'JARDINES':
+                # 🏡 NUEVO: Si es Jardines Internos, obligamos una patrulla de 2 varones y 2 mujeres
+                cupos_requeridos = [{'genero': 'M'} for _ in range(2)] + [{'genero': 'F'} for _ in range(2)]
             else:
                 # Si son baños, se necesita 1 sola persona por tarea y el género va amarrado al baño correspondiente
                 genero_baño = 'M' if area.nombre == 'BANOS_H' else 'F'
                 cupos_requeridos = [{'genero': genero_baño}]
             
-            # El ciclo se ejecutará la cantidad de cupos definidos arriba (8 veces en áreas verdes, 1 en baños)
+            # El ciclo se ejecutará la cantidad de cupos definidos arriba
             for cupo in cupos_requeridos:
                 # 🚀 LÓGICA DE RONDAS INFINITAS: Contamos las asistencias totales filtrando por el género del cupo actual
                 estudiantes_qs = Estudiante.objects.annotate(
@@ -42,7 +44,7 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
 
                 # 2. Evaluar la disponibilidad real de cada muchacho
                 for estudiante in estudiantes_qs:
-                    # REGLA 1: Excepciones de horario de clases (Probamos con el número y con el string por si acaso)
+                    # REGLA 1: Excepciones de horario de clases
                     tiene_excepcion = ExcepcionHorario.objects.filter(
                         Q(dia_semana=str(dia_semana_django)) | Q(dia_semana=dia_semana_django),
                         estudiante=estudiante,
@@ -53,7 +55,7 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
 
                     # REGLA 2: Exclusión mutua (No repetir al mismo estudiante hoy)
                     ya_limpia_hoy = TurnoAsignado.objects.filter(
-                        estudiante=estudiante,
+                        student=estudiante, # Nota: Si tu modelo usa 'estudiante', mantenlo así
                         fecha=fecha
                     ).exists() or any(t.estudiante == estudiante for t in turnos_creados)
                     

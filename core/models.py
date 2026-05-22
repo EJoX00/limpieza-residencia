@@ -6,6 +6,7 @@ class Area(models.Model):
         ('BANOS_H', 'Baños Hombres'),
         ('BANOS_M', 'Baños Mujeres'),
         ('AREAS_V', 'Áreas Verdes'),
+        ('JARDINES', 'Jardines Internos'),
     ]
     nombre = models.CharField(max_length=10, choices=NOMBRE_CHOICES, unique=True)
 
