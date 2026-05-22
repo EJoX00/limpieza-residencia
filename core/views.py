@@ -117,9 +117,15 @@ def panel_control(request):
 @login_required
 def acc_generar_rol(request):
     if request.method == 'POST':
+        # 1. Capturar el área de forma ultra-segura contra nulos o vacíos
+        area_id = request.POST.get('area_id')
+        
         if request.user.is_superuser:
-            area_id = request.POST.get('area_id')
-            area = get_object_or_404(Area, id=area_id)
+            if area_id and area_id.isdigit():
+                area = get_object_or_404(Area, id=int(area_id))
+            else:
+                # Si viene vacío o dañado, agarramos la primera área disponible para que no estalle
+                area = Area.objects.first()
         else:
             perfil = get_object_or_404(PerfilAdministrador, user=request.user)
             area = perfil.area_asignada
@@ -127,23 +133,21 @@ def acc_generar_rol(request):
         fecha_str = request.POST.get('fecha')
         turno_horario = request.POST.get('turno_horario')
         
-        # 1. Validar que los campos no vengan vacíos desde el HTML
+        # 2. Validar campos obligatorios
         if not fecha_str or not turno_horario:
             messages.error(request, "Error: Por favor selecciona una fecha y un turno válidos.")
             return redirect(f'/panel/?area_id={area.id}' if request.user.is_superuser else 'panel_control')
             
         try:
-            # 2. Convertir la fecha atrapando fallos de formato
             fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%d').date()
         except ValueError:
-            messages.error(request, f"Error: El formato de fecha recibido ('{fecha_str}') no es válido. Usa el selector del navegador.")
+            messages.error(request, f"Error: El formato de fecha recibido ('{fecha_str}') no es válido.")
             return redirect(f'/panel/?area_id={area.id}' if request.user.is_superuser else 'panel_control')
         
-        # 3. Ejecutar el robot de servicios atrapando fallos internos (Falta de tareas o personal)
+        # 3. Ejecutar el robot atrapando fallos internos
         try:
             generar_turnos_para_fecha(fecha, turno_horario, area)
             
-            # AUDITORÍA: Guardar quién disparó el robot
             HistorialAccion.objects.create(
                 usuario=request.user,
                 accion=f"Generó automáticamente el rol del {fecha_str} ({turno_horario})",
@@ -152,7 +156,7 @@ def acc_generar_rol(request):
             
             messages.success(request, f"¡Rol generado con éxito para el día {fecha_str}!")
         except Exception as e:
-            # Si services.py tira un error, se muestra de forma elegante en la barra roja sin romper la web
+            # Cualquier aviso del service.py se mostrará aquí limpiamente
             messages.error(request, f"Aviso del sistema: {str(e)}")
             
         if request.user.is_superuser:
