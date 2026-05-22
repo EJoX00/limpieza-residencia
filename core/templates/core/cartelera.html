@@ -1,10 +1,24 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
+<div class="hero-section text-center d-flex flex-column align-items-center justify-content-center text-white position-relative overflow-hidden mb-5 rounded shadow">
+    <div class="hero-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+    <div class="hero-content position-relative z-index-2 px-3 animate-fade-in">
+        <h1 class="display-3 fw-bold mb-2 text-shadow">Residencia Estudiantil UNI</h1>
+        <h3 class="lead fs-3 text-warning fw-semibold mb-4">Rol de Limpieza Automatizado</h3>
+        <p class="text-light opacity-75 max-w-md mx-auto small">Desplázate hacia abajo para consultar las asignaciones de esta semana en tiempo real.</p>
+        <div class="mt-4 animate-bounce">
+            <span class="fs-4">👇</span>
+        </div>
+    </div>
+</div>
+
 <div class="row mb-4 text-center text-md-start">
     <div class="col-md-8">
-        <h1 class="display-5 fw-bold text-dark">📋 Cartelera Pública de Limpieza</h1>
-        <p class="text-muted lead">Busca tu turno seleccionando tu área correspondiente abajo.</p>
+        <h2 class="fw-bold text-dark">📅 Roles de Limpieza Asignados</h2>
+        <p class="text-muted">Filtra rápido seleccionando tu área correspondiente abajo.</p>
     </div>
     <div class="col-md-4 text-md-end align-self-center">
         <a href="{% url 'panel_control' %}" class="btn btn-primary fw-bold shadow-sm">⚙️ Acceso Administradores</a>
@@ -42,7 +56,7 @@
     
     <div class="tab-pane fade show active" id="sec-hombres" role="tabpanel">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Roles Asignados - Sección Varones</div>
+            <div class="card-header bg-dark text-white fw-bold">📅 Sección Varones</div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -56,14 +70,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% comment %} 
-                          Filtramos por área y ordenamos visualmente en el HTML usando la etiqueta dictsort de Django 
-                          para ordenar primero por habitación y luego por nombre.
-                        {% endcomment %}
-                        {% for turno in turnos|dictsort:"estudiante.nombre"|dictsort:"estudiante.habitacion" %}
+                        {% for turno in turnos %}
                             {% if turno.tarea.area.nombre == 'BANOS_H' %}
                             <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d \d\e F, Y" }}</td>
+                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                 <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                 <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
                                 <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
@@ -86,7 +96,7 @@
 
     <div class="tab-pane fade" id="sec-mujeres" role="tabpanel">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Roles Asignados - Sección Damas</div>
+            <div class="card-header bg-dark text-white fw-bold">📅 Sección Damas</div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -100,10 +110,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for turno in turnos|dictsort:"estudiante.nombre"|dictsort:"estudiante.habitacion" %}
+                        {% for turno in turnos %}
                             {% if turno.tarea.area.nombre == 'BANOS_M' %}
                             <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d \d\e F, Y" }}</td>
+                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                 <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                 <td><span class="text-primary fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
                                 <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
@@ -126,7 +136,7 @@
 
     <div class="tab-pane fade" id="sec-verdes" role="tabpanel">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-dark text-white fw-bold">📅 Roles Asignados - Patios y Exteriores</div>
+            <div class="card-header bg-dark text-white fw-bold">📅 Patios y Exteriores</div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
@@ -140,10 +150,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for turno in turnos|dictsort:"estudiante.nombre"|dictsort:"estudiante.habitacion" %}
+                        {% for turno in turnos %}
                             {% if turno.tarea.area.nombre == 'AREAS_V' %}
                             <tr class="fila-turno">
-                                <td class="fw-bold">{{ turno.fecha|date:"d \d\e F, Y" }}</td>
+                                <td class="fw-bold">{{ turno.fecha|date:"d M Y" }}</td>
                                 <td><span class="badge bg-secondary">{{ turno.get_turno_horario_display }}</span></td>
                                 <td><span class="text-success fw-bold">{{ turno.tarea.nombre_tarea }}</span></td>
                                 <td class="nombre-estudiante"><strong>{{ turno.estudiante.nombre }}</strong></td>
@@ -163,18 +173,45 @@
             </div>
         </div>
     </div>
-
 </div>
 
+<style>
+    .hero-section { height: 70vh; background-color: #111; }
+    .hero-bg { background-image: url("{% static 'fondo-uni.png' %}"); background-size: cover; background-position: center; transition: transform 0.1s ease-out, opacity 0.1s ease-out; will-change: transform, opacity; }
+    .z-index-2 { z-index: 2; }
+    .text-shadow { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .animate-bounce { animation: bounce 2s infinite; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+    .nav-pills .nav-link { color: #495057; border: 1px solid transparent; background: none; transition: all 0.2s ease-in-out; }
+    .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
+    .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
+</style>
+
 <script>
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.scrollY;
+        const heroBg = document.querySelector('.hero-bg');
+        const heroContent = document.querySelector('.hero-content');
+        if (heroBg && heroContent) {
+            let scaleValue = 1 + (scrollPosition * 0.0015);
+            let opacityValue = 1 - (scrollPosition * 0.0035);
+            if (opacityValue < 0) opacityValue = 0;
+            if (scaleValue > 1.8) scaleValue = 1.8;
+            heroBg.style.transform = `scale(${scaleValue})`;
+            heroBg.style.opacity = opacityValue;
+            heroContent.style.opacity = opacityValue;
+            heroContent.style.transform = `translateY(${scrollPosition * 0.3}px);`;
+        }
+    });
+
     document.getElementById('buscadorCartelera').addEventListener('keyup', function() {
         const busqueda = this.value.toLowerCase().trim();
         const filas = document.querySelectorAll('.fila-turno');
-
         filas.forEach(fila => {
             const nombre = fila.querySelector('.nombre-estudiante').textContent.toLowerCase();
             const habitacion = fila.querySelector('.cuarto-estudiante').textContent.toLowerCase();
-            
             if (nombre.includes(busqueda) || habitacion.includes(busqueda)) {
                 fila.style.display = '';
             } else {
@@ -183,11 +220,4 @@
         });
     });
 </script>
-
-<style>
-    .nav-pills .nav-link { color: #495057; border: 1px solid transparent; background: none; transition: all 0.2s ease-in-out; }
-    .nav-pills .nav-link.active { background-color: #0d6efd !important; color: white !important; box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2); }
-    .nav-pills .nav-link:hover:not(.active) { background-color: #f8f9fa; color: #0d6efd; }
-    .table th { font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase; }
-</style>
 {% endblock %}
