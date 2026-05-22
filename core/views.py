@@ -261,19 +261,40 @@ def g_excepcion(request):
 def g_manual(request):
     if request.method == 'POST':
         form = AsignacionManualForm(request.POST)
+        
+        # Capturamos la fecha y el turno que están activos en la barra o en los inputs del dashboard
+        fecha_str = request.POST.get('fecha') or request.GET.get('fecha')
+        turno_horario = request.POST.get('turno_horario') or request.GET.get('turno_horario')
+        
         if form.is_valid():
-            turno = form.save()
+            # Clonamos el objeto sin guardarlo en Supabase todavía
+            turno = form.save(commit=False)
             
-            # AUDITORÍA: Guardar asignación a dedo
+            # Si la fecha o el turno no vienen en el form, los parchamos con lo que capturamos de la vista
+            if not turno.fecha and fecha_str:
+                turno.fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%d').date()
+            elif not turno.fecha:
+                turno.fecha = datetime.date.today() # Respaldo por si acaso
+                
+            if not turno.turno_horario and turno_horario:
+                turno.turno_horario = turno_horario
+            elif not turno.turno_horario:
+                turno.turno_horario = 'NOCHE' # Respaldo por defecto
+                
+            # Ahora sí, guardamos en Supabase con todos sus datos completos
+            turno.save()
+            
             HistorialAccion.objects.create(
                 usuario=request.user,
-                accion=f"Asignó MANUALMENTE a {turno.estudiante.nombre} para la tarea '{turno.tarea.nombre_tarea}' el {turno.fecha}",
+                accion=f"Asignó MANUALMENTE a {turno.estudiante.nombre} para la tarea '{turno.tarea.nombre_tarea}'",
                 area_origen=turno.tarea.area.get_nombre_display()
             )
-            
             messages.success(request, "Asignación manual registrada con éxito.")
         else:
-            messages.error(request, "Datos inválidos en la asignación manual.")
+            # Si el formulario falla por otra cosa, esto te va a cantar el error exacto en la barra roja
+            errores = ", ".join([f"{k}: {v[0]}" for k, v in form.errors.items()])
+            messages.error(request, f"No se pudo asignar a dedo. Errores: {errores}")
+            
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 

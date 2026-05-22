@@ -7,11 +7,13 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
     """
     Busca de forma automática, justa e infinita a los estudiantes necesarios 
     para cubrir las tareas de un área en una fecha y turno específicos.
+    Respeta estrictamente los géneros por baños y balancea 4H/4M en Áreas Verdes.
     """
     # Validar si existen tareas en esta área antes de hacer nada
+    # CORRECCIÓN: Quitamos .get_nombre_display() directo de la excepción para evitar bugs de atributos
     tareas = Tarea.objects.filter(area=area)
     if not tareas.exists():
-        raise Exception(f"No hay tareas registradas en la base de datos para el área: {area.get_nombre_display()}. Debes crearlas primero.")
+        raise Exception(f"No hay tareas registradas en la base de datos para el área: {area}. Debes crearlas primero.")
         
     # Formato estándar de Django para días de la semana (0=Lunes, 1=Martes, ..., 6=Domingo)
     dia_semana_django = fecha.weekday() 
@@ -19,22 +21,22 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
 
     with transaction.atomic():
         for tarea in tareas:
-            # Si es áreas verdes, el ciclo se ejecutará 8 veces para esa misma tarea
-            repeticiones = 8 if area.nombre == 'AREAS_V' else 1
+            # 🚀 AJUSTE DE GÉNEROS Y REPETICIONES AUTOMÁTICAS
+            # Creamos una lista de diccionarios que le dice al robot exactamente el género que ocupamos en cada cupo
+            if area.nombre == 'AREAS_V':
+                # Si es áreas verdes, obligamos al bot a buscar 4 varones (M) y 4 mujeres (F)
+                cupos_requeridos = [{'genero': 'M'} for _ in range(4)] + [{'genero': 'F'} for _ in range(4)]
+            else:
+                # Si son baños, se necesita 1 sola persona por tarea y el género va amarrado al baño correspondiente
+                genero_baño = 'M' if area.nombre == 'BANOS_H' else 'F'
+                cupos_requeridos = [{'genero': genero_baño}]
             
-            for _ in range(repeticiones):
-                # 🚀 LÓGICA DE RONDAS INFINITAS: Contamos las asistencias totales de cada estudiante
+            # El ciclo se ejecutará la cantidad de cupos definidos arriba (8 veces en áreas verdes, 1 en baños)
+            for cupo in cupos_requeridos:
+                # 🚀 LÓGICA DE RONDAS INFINITAS: Contamos las asistencias totales filtrando por el género del cupo actual
                 estudiantes_qs = Estudiante.objects.annotate(
                     total_turnos=Count('turnoasignado')
-                )
-
-                # Filtrar según el género requerido por el Área o traerlos todos
-                if area.nombre == 'BANOS_H':
-                    estudiantes_qs = estudiantes_qs.filter(genero='M').order_by('total_turnos', '?')
-                elif area.nombre == 'BANOS_M':
-                    estudiantes_qs = estudiantes_qs.filter(genero='F').order_by('total_turnos', '?')
-                else:
-                    estudiantes_qs = estudiantes_qs.order_by('total_turnos', '?')
+                ).filter(genero=cupo['genero']).order_by('total_turnos', '?')
 
                 estudiante_elegido = None
 
@@ -58,15 +60,16 @@ def generar_turnos_para_fecha(fecha, turno_horario, area):
                     if ya_limpia_hoy:
                         continue 
 
-                    # Candidato ideal encontrado
+                    # Candidato ideal encontrado que cumple con el género y el horario
                     estudiante_elegido = estudiante
                     break
 
-                # Si el bucle termina y nadie pudo cubrir el puesto
+                # Si el bucle termina y nadie de ese género pudo cubrir el puesto
                 if not estudiante_elegido:
+                    genero_texto = "Varones" if cupo['genero'] == 'M' else "Mujeres"
                     raise Exception(
-                        f"Falta de personal: No hay suficientes estudiantes disponibles (que no tengan clases o turnos hoy) "
-                        f"para completar los cupos de '{tarea.nombre_tarea}' el {fecha}."
+                        f"Falta de personal: No hay suficientes estudiantes del género [{genero_texto}] disponibles "
+                        f"(sin clases ni asignaciones hoy) para cubrir el cupo de '{tarea.nombre_tarea}' el {fecha}."
                     )
 
                 # 3. Crear el turno asignado
