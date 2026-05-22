@@ -55,7 +55,7 @@ class ExcepcionHorario(models.Model):
     ]
     # 🚀 AGREGADO EL TURNO DE LA MAÑANA DE FORMA COMPATIBLE
     TURNO_CHOICES = [
-        ('MANANA', 'Mañana (6:00 AM)'),
+        ('MANANA', 'Mañana (8:00 AM)'),
         ('TARDE', 'Tarde (2:00 PM)'),
         ('NOCHE', 'Noche')
     ]
