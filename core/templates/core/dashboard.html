@@ -113,8 +113,9 @@
             {% if user.is_superuser %}
                 <button type="button" class="btn btn-sm btn-warning m-1 text-dark" data-bs-toggle="modal" data-bs-target="#modalCodigo"><i class="fas fa-key me-1"></i> Generar Códigos</button>
                 <button type="button" class="btn btn-sm btn-success m-1 text-white" data-bs-toggle="modal" data-bs-target="#modalEstudiante"><i class="fas fa-plus me-1"></i> Registrar Estudiante</button>
+                <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion"><i class="fas fa-ban me-1"></i> Horario Académico</button>
             {% endif %}
-            <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion"><i class="fas fa-ban me-1"></i> Horario Académico</button>
+            
             <button type="button" class="btn btn-sm btn-outline-dark m-1" data-bs-toggle="modal" data-bs-target="#modalManual"><i class="fas fa-edit me-1"></i> Asignación Manual</button>
             
             <form action="{% url 'logout' %}" method="POST" class="d-inline m-1">
@@ -177,7 +178,7 @@
                                     <small class="text-muted" style="font-size: 0.75rem;">{{ est.carrera }} | {{ est.carnet }}</small>
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge bg-light text-dark border border-secondary me-1" style="font-size: 0.7rem;">Hab. {{ est.habitacion }}</span>
+                                    <span class="badge bg-light text-dark border border-secondary me-1" style="font-size: 0.7 roll;">Hab. {{ est.habitacion }}</span>
                                     {% if user.is_superuser %}
                                         <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-xs btn-outline-info p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" title="Editar datos"><i class="fas fa-edit text-info"></i></a>
                                         <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-xs btn-outline-danger p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }}?');" title="Eliminar becado"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -294,7 +295,7 @@
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0.5 px-1.5 text-white">✓</a>
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0.5 px-1.5 text-white">✗</a>
                                         {% else %}
-                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7rem;">{{ turno.get_estado_display }}</span>
+                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7 Club;">{{ turno.get_estado_display }}</span>
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none fw-bold" style="font-size: 0.75rem;">Reiniciar</a>
                                         {% endif %}
                                     </td>
@@ -383,7 +384,6 @@
         </div>
     </div>
 </div>
-{% endif %}
 
 <div class="modal fade" id="modalExcepcion" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -395,6 +395,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="modal fade" id="modalManual" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -427,7 +428,7 @@
         document.getElementById('manual_turno_contexto').value = turnoActivo;
     });
 
-    // Filtro inteligente para el cronograma sin mezclar cuarto 1 con 11
+    // Buscador de precisión milimétrica al vuelo
     document.getElementById('buscadorTablaAsignaciones').addEventListener('keyup', function() {
         const busqueda = this.value.toLowerCase().trim();
         const filas = document.querySelectorAll('.fila-cronograma');
@@ -441,7 +442,6 @@
                 return;
             }
             
-            // Si calza exacto con el número de habitación, o si el nombre incluye la búsqueda, se queda
             if (habitacion === busqueda || nombre.includes(busqueda)) {
                 fila.style.display = '';
             } else {
