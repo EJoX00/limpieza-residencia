@@ -5,18 +5,26 @@
 <style>
     /* 📋 ESTILOS REEDIFICADOS VIVOS PARA LA CARTELERA */
     .hero-section { 
-        height: 50vh !important; 
+        height: 60vh !important; /* Aumentamos altura para que se aprecie mejor el zoom */
         border-bottom: 3px solid #0f172a;
         background-color: #0f172a;
+        overflow: hidden; /* Necesario para que la imagen no se salga al escalar */
     }
     
-    /* 🖼️ REPARACIÓN ABSOLUTA DE LA IMAGEN DE FONDO */
+    /* 🖼️ RESTAURACIÓN ABSOLUTA Y SEGURA DE LA IMAGEN DE FONDO CON ZOOM */
     .hero-bg { 
         background-image: url("{% static 'fondo-uni.png' %}") !important; 
         background-size: cover; 
         background-position: center; 
+        /* Transiciones suaves para el zoom y opacidad */
         transition: transform 0.1s ease-out, opacity 0.1s ease-out; 
+        /* Optimización de renderizado */
         will-change: transform, opacity; 
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        start: 0;
     }
     .z-index-2 { z-index: 2; }
     
@@ -400,19 +408,30 @@
 <script>
     let calendarioInstancia = null;
 
+    // 🧠 SCRIPT DEL EFECTO ZOOM DINÁMICO COMPLETAMENTE RECUPERADO Y OPTIMIZADO
     window.addEventListener('scroll', function() {
         const scrollPosition = window.scrollY;
         const heroBg = document.querySelector('.hero-bg');
         const heroContent = document.querySelector('.hero-content');
+        
         if (heroBg && heroContent) {
-            let scaleValue = 1 + (scrollPosition * 0.0015);
-            let opacityValue = 1 - (scrollPosition * 0.0035);
+            // Calculamos el factor de escala (zoom in)
+            let scaleValue = 1 + (scrollPosition * 0.001); // Ajusta el 0.001 para más/menos velocidad de zoom
+            
+            // Calculamos la opacidad (fade out)
+            let opacityValue = 1 - (scrollPosition * 0.002); // Ajusta el 0.002 para más/menos velocidad de fade
+            
+            // Limites para que no se vea mal
             if (opacityValue < 0) opacityValue = 0;
-            if (scaleValue > 1.8) scaleValue = 1.8;
+            if (scaleValue > 1.5) scaleValue = 1.5; // Zoom máximo de 1.5x
+
+            // Aplicamos los estilos directamente
             heroBg.style.transform = `scale(${scaleValue})`;
             heroBg.style.opacity = opacityValue;
             heroContent.style.opacity = opacityValue;
-            heroContent.style.transform = `translateY(${scrollPosition * 0.3}px)`;
+            
+            // Un pequeño efecto de movimiento hacia arriba para el texto
+            heroContent.style.transform = `translateY(${scrollPosition * 0.2}px)`;
         }
     });
 
