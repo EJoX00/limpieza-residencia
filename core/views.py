@@ -259,6 +259,7 @@ def g_excepcion(request):
 
 @login_required
 def g_manual(request):
+    """Asignación manual corregida: parchea los datos faltantes y redirecciona dinámicamente."""
     if request.method == 'POST':
         # 1. Recuperamos la fecha y turno seleccionados en el cuadro del robot inteligente
         fecha_str = request.POST.get('fecha_contexto')
@@ -282,8 +283,6 @@ def g_manual(request):
         
         if form.is_valid():
             turno = form.save()
-            
-            # Recuperamos el objeto area para la bitácora
             area_obj = turno.tarea.area
             
             HistorialAccion.objects.create(
@@ -292,6 +291,10 @@ def g_manual(request):
                 area_origen=str(area_obj)
             )
             messages.success(request, "¡Asignación manual registrada con éxito!")
+            
+            # RETORNO INTELIGENTE: Si eres superusuario, te mantiene en el área actual para que veas el cambio
+            if request.user.is_superuser:
+                return redirect(f'/panel/?area_id={area_obj.id}')
         else:
             # Si hay algún problema oculto, esto te lo cantará en letras rojas arriba
             errores = ", ".join([f"{k}: {v[0]}" for k, v in form.errors.items()])
@@ -353,7 +356,7 @@ def editar_estudiante(request, estudiante_id):
 @login_required
 def borrar_estudiante(request, estudiante_id):
     """Vista para eliminar por completo a un becado del sistema."""
-    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    get_object_or_404(Estudiante, id=estudiante_id)
     
     HistorialAccion.objects.create(
         usuario=request.user,
