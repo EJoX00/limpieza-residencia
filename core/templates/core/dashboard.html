@@ -16,25 +16,43 @@
 </div>
 {% endif %}
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <h2>Gestión de Área: <span class="text-primary">{{ area.get_nombre_display }}</span></h2>
-        <p class="text-muted">Consola centralizada de administración de personal y roles.</p>
-    </div>
-    <div class="col-md-6 text-md-end align-self-center">
-        {% if user.is_superuser %}
-            <button type="button" class="btn btn-sm btn-warning m-1" data-bs-toggle="modal" data-bs-target="#modalCodigo">🔑 Generar Códigos</button>
-            <button type="button" class="btn btn-sm btn-success m-1" data-bs-toggle="modal" data-bs-target="#modalEstudiante">➕ Registrar Estudiante</button>
-        {% endif %}
-        <button type="button" class="btn btn-sm btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#modalExcepcion">🚫 Bloqueo Horario</button>
-        <button type="button" class="btn btn-sm btn-outline-dark m-1" data-bs-toggle="modal" data-bs-target="#modalManual">✍️ Asignación Manual</button>
-        
-        <form action="{% url 'logout' %}" method="POST" class="d-inline m-1">
+<span class="fw-bold text-warning">🛡️ Admin. E.Rios (Control Global):</span>
+
+<div class="modal fade" id="modalManual" tabindex="-1" aria-hidden="true">
+    <div class="modal-content modal-dialog p-3">
+        <div class="modal-header">
+            <h5 class="modal-title">✍️ Asignación Manual Directa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form method="POST" action="{% url 'g_manual' %}" id="formAsignacionManual">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-sm">Salir</button>
+            
+            <input type="hidden" name="fecha_contexto" id="manual_fecha_contexto">
+            <input type="hidden" name="turno_contexto" id="manual_turno_contexto">
+            
+            {{ form_manual.as_p }}
+            
+            <button type="submit" class="btn btn-dark w-100">Asignar a Dedo</button>
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('modalManual').addEventListener('show.bs.modal', function () {
+        // Obtenemos lo que está escrito actualmente en los inputs del cuadro azul del generador
+        const fechaActiva = document.querySelector('input[name="fecha"]').value;
+        const turnoActivo = document.querySelector('select[name="turno_horario"]').value;
+        
+        // Se los inyectamos al modal oculto
+        document.getElementById('manual_fecha_contexto').value = fechaActiva;
+        document.getElementById('manual_turno_contexto').value = turnoActivo;
+    });
+</script>
+
+<style>
+    input, select { display: block; width: 100%; padding: 0.375rem 0.75rem; border: 1px solid #ced4da; border-radius: 0.375rem; margin-bottom: 10px; }
+    .style-table td, .style-table th { padding: 4px 8px !important; }
+</style>
 
 <div class="row">
     <div class="col-md-4 mb-4">

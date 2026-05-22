@@ -260,38 +260,40 @@ def g_excepcion(request):
 @login_required
 def g_manual(request):
     if request.method == 'POST':
-        form = AsignacionManualForm(request.POST)
+        # 1. Recuperamos la fecha y turno seleccionados en el cuadro del robot inteligente
+        fecha_str = request.POST.get('fecha_contexto')
+        turno_horario = request.POST.get('turno_contexto')
         
-        # Capturamos la fecha y el turno que están activos en la barra o en los inputs del dashboard
-        fecha_str = request.POST.get('fecha') or request.GET.get('fecha')
-        turno_horario = request.POST.get('turno_horario') or request.GET.get('turno_horario')
+        # 2. Copiamos los datos que vienen del modal manual para inyectarles lo que falta
+        post_data = request.POST.copy()
+        
+        if fecha_str:
+            post_data['fecha'] = fecha_str
+        else:
+            post_data['fecha'] = datetime.date.today().strftime('%Y-%m-%d')
+            
+        if turno_horario:
+            post_data['turno_horario'] = turno_horario
+        else:
+            post_data['turno_horario'] = 'NOCHE'
+            
+        # 3. Validamos el formulario con los datos completamente parchados en el backend
+        form = AsignacionManualForm(post_data)
         
         if form.is_valid():
-            # Clonamos el objeto sin guardarlo en Supabase todavía
-            turno = form.save(commit=False)
+            turno = form.save()
             
-            # Si la fecha o el turno no vienen en el form, los parchamos con lo que capturamos de la vista
-            if not turno.fecha and fecha_str:
-                turno.fecha = datetime.datetime.strptime(fecha_str, '%Y-%m-%d').date()
-            elif not turno.fecha:
-                turno.fecha = datetime.date.today() # Respaldo por si acaso
-                
-            if not turno.turno_horario and turno_horario:
-                turno.turno_horario = turno_horario
-            elif not turno.turno_horario:
-                turno.turno_horario = 'NOCHE' # Respaldo por defecto
-                
-            # Ahora sí, guardamos en Supabase con todos sus datos completos
-            turno.save()
+            # Recuperamos el objeto area para la bitácora
+            area_obj = turno.tarea.area
             
             HistorialAccion.objects.create(
                 usuario=request.user,
                 accion=f"Asignó MANUALMENTE a {turno.estudiante.nombre} para la tarea '{turno.tarea.nombre_tarea}'",
-                area_origen=turno.tarea.area.get_nombre_display()
+                area_origen=str(area_obj)
             )
-            messages.success(request, "Asignación manual registrada con éxito.")
+            messages.success(request, "¡Asignación manual registrada con éxito!")
         else:
-            # Si el formulario falla por otra cosa, esto te va a cantar el error exacto en la barra roja
+            # Si hay algún problema oculto, esto te lo cantará en letras rojas arriba
             errores = ", ".join([f"{k}: {v[0]}" for k, v in form.errors.items()])
             messages.error(request, f"No se pudo asignar a dedo. Errores: {errores}")
             

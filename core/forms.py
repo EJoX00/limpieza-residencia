@@ -60,9 +60,12 @@ class AsignacionManualForm(forms.ModelForm):
     class Meta:
         model = TurnoAsignado
         fields = ['estudiante', 'tarea', 'fecha', 'turno_horario']
+        widgets = {
+            # Los ocultamos con widgets invisibles para que no estorben la vista
+            'fecha': forms.HiddenInput(),
+            'turno_horario': forms.HiddenInput(),
+        }
         labels = {
             'estudiante': 'Estudiante a Asignar',
             'tarea': 'Tarea Específica',
-            'fecha': 'Fecha Planificada',
-            'turno_horario': 'Horario del Turno',
         }
