@@ -86,9 +86,28 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
+# 🚀 NUEVO FILTRO INTELIGENTE PARA LA ASIGNACIÓN MANUAL
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
-
+    
+    # 1. Empezamos con todos los estudiantes
+    estudiantes_manual_qs = Estudiante.objects.all()
+    
+    # 2. Aplicamos filtro estricto de género según el área donde estés parado
+    if area.nombre == 'BANOS_H':
+        estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
+    elif area.nombre == 'BANOS_M':
+        estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='F')
+    # Nota: Si es AREAS_V, no entra a ningún IF y se permiten ambos géneros (M y F)
+        
+    # 3. FILTRAZO: Excluimos a los que ya CUMPLIERON su turno en la ronda actual.
+    # De esta forma, los que están en 'PENDIENTE', los que quedaron como 'FALTO' o los que no han hecho nada, SÍ aparecen en la lista.
+    estudiantes_manual_qs = estudiantes_manual_qs.exclude(
+        turnoasignado__estado='CUMPLIDO'
+    ).distinct().order_by('habitacion', 'nombre')
+    
+    # Asignamos la lista filtrada al formulario que se dibuja en el modal
+    form_manual.fields['estudiante'].queryset = estudiantes_manual_qs
     codigos_registro = None
     if request.user.is_superuser:
         codigos_registro = CodigoRegistro.objects.all().order_by('-usado')
