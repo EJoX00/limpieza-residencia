@@ -32,16 +32,11 @@ class EstudianteForm(forms.ModelForm):
         }
 
     def clean_carnet(self):
-        carnet = self.cleaned_data.get('carnet').strip().upper() # Limpiamos espacios y pasamos a mayúsculas
-        
-        # Si es N/A, lo dejamos pasar sin importar cuántos haya
+        carnet = self.cleaned_data.get('carnet').strip().upper()
         if carnet == 'N/A':
             return carnet
-            
-        # Si es un carnet real, verificamos que no esté duplicado en el sistema
         if Estudiante.objects.filter(carnet=carnet).exists():
             raise forms.ValidationError("Este número de carnet ya está registrado con otro estudiante.")
-            
         return carnet
 
 
@@ -61,7 +56,6 @@ class AsignacionManualForm(forms.ModelForm):
         model = TurnoAsignado
         fields = ['estudiante', 'tarea', 'fecha', 'turno_horario']
         widgets = {
-            # Los ocultamos con widgets invisibles para que no estorben la vista
             'fecha': forms.HiddenInput(),
             'turno_horario': forms.HiddenInput(),
         }
