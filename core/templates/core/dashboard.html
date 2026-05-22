@@ -140,6 +140,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold small text-muted mb-1">Turno Horario</label>
                             <select name="turno_horario" class="form-select" required>
+                                <option value="MANANA">Mañana (6:00 AM)</option>
                                 <option value="TARDE">Tarde (2:00 PM)</option>
                                 <option value="NOCHE" selected>Noche</option>
                             </select>
@@ -178,7 +179,7 @@
                                     <small class="text-muted" style="font-size: 0.75rem;">{{ est.carrera }} | {{ est.carnet }}</small>
                                 </div>
                                 <div class="d-flex align-items-center gap-1">
-                                    <span class="badge bg-light text-dark border border-secondary me-1" style="font-size: 0.7 roll;">Hab. {{ est.habitacion }}</span>
+                                    <span class="badge bg-light text-dark border border-secondary me-1" style="font-size: 0.7rem;">Hab. {{ est.habitacion }}</span>
                                     {% if user.is_superuser %}
                                         <a href="{% url 'editar_estudiante' est.id %}" class="btn btn-xs btn-outline-info p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" title="Editar datos"><i class="fas fa-edit text-info"></i></a>
                                         <a href="{% url 'borrar_estudiante' est.id %}" class="btn btn-xs btn-outline-danger p-1 bg-white" style="font-size: 0.7rem; border: 1px solid #ced4da !important; box-shadow: none !important;" onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente a {{ est.nombre }}?');" title="Eliminar becado"><i class="fas fa-trash-alt text-danger"></i></a>
@@ -216,7 +217,7 @@
                                     <td><span class="badge bg-light text-dark border" style="font-size: 0.65rem;">{{ exc.estudiante.habitacion }}</span></td>
                                     <td>
                                         <span class="text-danger fw-bold" style="font-size: 0.75rem;">{{ exc.get_dia_semana_display }}</span><br>
-                                        <small class="text-muted" style="font-size: 0.7rem;">{{ exc.get_turno_bloqueado_display }}</small>
+                                        <small class="text-muted" style="font-size: 0.7rem;">{{ exc.get_turno_display }}</small>
                                     </td>
                                     <td class="text-center">
                                         <a href="{% url 'acc_borrar_excepcion' exc.id %}" 
@@ -246,7 +247,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center py-1.5 px-2 small">
                                 <div>
                                     <code class="fw-bold">{{ cod.codigo }}</code> <br>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Área: {{ cod.area_permitida.get_nombre_display }}</small>
+                                    <small class="text-muted" style="font-size: 0.7_roll;">Área: {{ cod.area_permitida.get_nombre_display }}</small>
                                 </div>
                                 {% if cod.usado %}
                                     <span class="badge bg-light text-secondary border">Usado: {{ cod.usuario_creado.username }}</span>
@@ -295,7 +296,7 @@
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'CUMPLIDO' %}" class="btn btn-success btn-sm py-0.5 px-1.5 text-white">✓</a>
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'FALTO' %}" class="btn btn-danger btn-sm py-0.5 px-1.5 text-white">✗</a>
                                         {% else %}
-                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7 Club;">{{ turno.get_estado_display }}</span>
+                                            <span class="badge {% if turno.estado == 'CUMPLIDO' %}bg-success{% else %}bg-danger{% endif %} px-2 py-1" style="font-size: 0.7_roll;">{{ turno.get_estado_display }}</span>
                                             <a href="{% url 'acc_cambiar_estado' turno.id 'PENDIENTE' %}" class="text-muted ms-2 small text-decoration-none fw-bold" style="font-size: 0.75rem;">Reiniciar</a>
                                         {% endif %}
                                     </td>
@@ -434,8 +435,8 @@
         const filas = document.querySelectorAll('.fila-cronograma');
         
         filas.forEach(fila => {
-            const nombre = fila.getAttribute('data-estudiante');
-            const habitacion = fila.getAttribute('data-habitacion').trim();
+            const nombre = fila.querySelector('td:nth-child(3) strong') ? fila.querySelector('td:nth-child(3) strong').textContent.toLowerCase() : '';
+            const habitacion = fila.getAttribute('data-habitacion') ? fila.getAttribute('data-habitacion').trim() : '';
             
             if (busqueda === '') {
                 fila.style.display = '';
