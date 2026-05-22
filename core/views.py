@@ -10,7 +10,10 @@ import datetime
 
 def cartelera_publica(request):
     """Vista pública (Cartelera) abierta para toda la residencia."""
-    turnos = TurnoAsignado.objects.all().order_by('-fecha', 'turno_horario')
+    # 🚀 ORDENAMIENTO MULTINIVEL:
+    
+    turnos = TurnoAsignado.objects.all().order_by('-fecha', 'estudiante__habitacion', 'estudiante__nombre')
+    
     return render(request, 'core/cartelera.html', {'turnos': turnos})
 
 def registro_admin(request):
@@ -86,28 +89,27 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
-# 🚀 NUEVO FILTRO INTELIGENTE PARA LA ASIGNACIÓN MANUAL
+# 🚀 NUEVO FILTRO INTERACTIVO Y ORDENADO PARA LA ASIGNACIÓN MANUAL
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
     
-    # 1. Empezamos con todos los estudiantes
+    # 1. Traemos los estudiantes
     estudiantes_manual_qs = Estudiante.objects.all()
     
-    # 2. Aplicamos filtro estricto de género según el área donde estés parado
+    # 2. Filtramos por género según el área actual
     if area.nombre == 'BANOS_H':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
     elif area.nombre == 'BANOS_M':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='F')
-    # Nota: Si es AREAS_V, no entra a ningún IF y se permiten ambos géneros (M y F)
         
-    # 3. FILTRAZO: Excluimos a los que ya CUMPLIERON su turno en la ronda actual.
-    # De esta forma, los que están en 'PENDIENTE', los que quedaron como 'FALTO' o los que no han hecho nada, SÍ aparecen en la lista.
+    # 3. Excluimos a los que ya cumplieron y ORDENAMOS POR CUARTO Y NOMBRE
     estudiantes_manual_qs = estudiantes_manual_qs.exclude(
         turnoasignado__estado='CUMPLIDO'
-    ).distinct().order_by('habitacion', 'nombre')
+    ).distinct().order_by('habitacion', 'nombre') # 👈 AQUÍ SE ORDENA EL DESPLEGABLE MANUAL
     
-    # Asignamos la lista filtrada al formulario que se dibuja en el modal
+    # Pasamos la lista ordenada al formulario del modal
     form_manual.fields['estudiante'].queryset = estudiantes_manual_qs
+    
     codigos_registro = None
     if request.user.is_superuser:
         codigos_registro = CodigoRegistro.objects.all().order_by('-usado')
