@@ -22,4 +22,6 @@ urlpatterns = [
 
     path('estudiante/editar/<int:estudiante_id>/', views.editar_estudiante, name='editar_estudiante'),
     path('estudiante/borrar/<int:estudiante_id>/', views.borrar_estudiante, name='borrar_estudiante'),
+    
+    path('panel/borrar-excepcion/<int:excepcion_id>/', views.acc_borrar_excepcion, name='acc_borrar_excepcion'),
 ]
