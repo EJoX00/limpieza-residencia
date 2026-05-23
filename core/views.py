@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Q, Count
 from django.db.models.functions import Cast   
 from django.db.models import IntegerField      
@@ -87,7 +88,6 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
-    # 🚀 CONTROL ABSOLUTO DE LA ASIGNACIÓN MANUAL (GÉNERO + EXCLUSIÓN + ORDEN NUMÉRICO)
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
     
@@ -110,7 +110,6 @@ def panel_control(request):
     if request.user.is_superuser:
         codigos_registro = CodigoRegistro.objects.all().order_by('-usado')
 
-    # 🚫 ALIMENTAMOS LA VARIABLE DE EXCEPCIONES AL CONTEXTO (SOLO SI SOS SUPERUSUARIO)
     excepciones = None
     if request.user.is_superuser:
         excepciones = ExcepcionHorario.objects.all().order_by('estudiante__nombre')
@@ -238,6 +237,7 @@ def g_estudiante(request):
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
+# 🔒 LOGICA INTERNA MEJORADA: CON CANDADO ATÓMICO ANTI-ERRORES MASIVO
 @login_required
 def g_excepcion(request):
     if not request.user.is_superuser:
@@ -247,15 +247,48 @@ def g_excepcion(request):
     if request.method == 'POST':
         form = ExcepcionForm(request.POST)
         if form.is_valid():
-            ex = form.save()
-            HistorialAccion.objects.create(
-                usuario=request.user,
-                accion=f"Creó un bloqueo horario académico para {ex.estudiante.nombre} los días {ex.get_dia_semana_display()}",
-                area_origen="Control Global"
-            )
-            messages.success(request, "Excepción de horario académica guardada.")
+            estudiante = form.cleaned_data['estudiante']
+            dia_semana = form.cleaned_data['dia_semana']
+            turno = form.cleaned_data['turno']
+
+            # 🚀 PROCESAMIENTO GRUPAL: Lunes a Viernes seleccionado (valor 0)
+            if dia_semana == 0:
+                conteo_creados = 0
+                try:
+                    with transaction.atomic():
+                        for dia in range(1, 6): # Bucle limpio del 1 al 5
+                            if not ExcepcionHorario.objects.filter(estudiante=estudiante, dia_semana=dia, turno=turno).exists():
+                                ExcepcionHorario.objects.create(
+                                    estudiante=estudiante,
+                                    dia_semana=dia,
+                                    turno=turno
+                                )
+                                conteo_creados += 1
+                        
+                    if conteo_creados > 0:
+                        HistorialAccion.objects.create(
+                            usuario=request.user,
+                            accion=f"Creó bloqueo masivo (Lun-Vie) para {estudiante.nombre} en el turno {turno}",
+                            area_origen="Control Global"
+                        )
+                        messages.success(request, f"¡Éxito! Se registraron {conteo_creados} bloqueos automáticos (Lunes a Viernes) para {estudiante.nombre}.")
+                    else:
+                        messages.warning(request, "Aviso: El estudiante ya tenía bloqueos asignados para todos los días hábiles individuales.")
+                except Exception as e:
+                    messages.error(request, f"Error crítico al procesar la carga masiva: {str(e)}")
+            
+            else:
+                # Flujo estándar si se guarda un único día
+                form.save()
+                HistorialAccion.objects.create(
+                    usuario=request.user,
+                    accion=f"Creó un bloqueo horario académico para {estudiante.nombre} el día {form.instance.get_dia_semana_display()}",
+                    area_origen="Control Global"
+                )
+                messages.success(request, "Excepción de horario académica guardada.")
         else:
             messages.error(request, "Error: Es posible que este alumno ya tenga esa excepción registrada.")
+            
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
@@ -358,12 +391,12 @@ def editar_estudiante(request, estudiante_id):
 
 @login_required
 def borrar_estudiante(request, estudiante_id):
-    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    student = get_object_or_404(Estudiante, id=estudiante_id)
     HistorialAccion.objects.create(
         usuario=request.user,
-        accion=f"ELIMINÓ permanentemente al estudiante {estudiante.nombre} del sistema.",
+        accion=f"ELIMINÓ permanentemente al estudiante {student.nombre} del sistema.",
         area_origen="Control Global"
     )
-    messages.warning(request, f"El estudiante {estudiante.nombre} fue eliminado de las listas.")
-    estudiante.delete()
+    messages.warning(request, f"El estudiante {student.nombre} fue eliminado de las listas.")
+    student.delete()
     return redirect('panel_control')
