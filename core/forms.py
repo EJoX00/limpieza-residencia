@@ -41,12 +41,20 @@ class EstudianteForm(forms.ModelForm):
 
 
 class ExcepcionForm(forms.ModelForm):
+    # Definimos el campo de forma segura para aceptar texto ('TODOS') o números individuales
+    dia_semana = forms.ChoiceField(
+        choices=[('', '---------'), ('TODOS', 'Todos (Lunes a Viernes)')] + [
+            (1, 'Lunes'), (2, 'Martes'), (3, 'Miércoles'),
+            (4, 'Jueves'), (5, 'Viernes'), (6, 'Sábado'), (7, 'Domingo')
+        ],
+        label='Día de la Semana Ocupado'
+    )
+
     class Meta:
         model = ExcepcionHorario
         fields = ['estudiante', 'dia_semana', 'turno']
         labels = {
             'estudiante': 'Selecciona el Estudiante',
-            'dia_semana': 'Día de la Semana Ocupado',
             'turno': 'Turno Bloqueado',
         }
 
