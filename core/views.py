@@ -92,7 +92,7 @@ def panel_control(request):
     
     estudiantes_manual_qs = Estudiante.objects.all()
     if area.nombre == 'BANOS_H':
-        estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
+        estudiantes_manual_qs = scammers = estudiantes_manual_qs.filter(genero='M')
     elif area.nombre == 'BANOS_M':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='F')
         
@@ -164,6 +164,7 @@ def acc_generar_rol(request):
 
 @login_required
 def acc_cambiar_estado(request, turno_id, nuevo_estado):
+    # 🚀 REPARADO AQUÍ: Nombre del modelo corregido a TurnoAsignado
     turno = get_object_or_404(TurnoAsignado, id=turno_id)
     if not request.user.is_superuser:
         perfil = get_object_or_404(PerfilAdministrador, user=request.user)
@@ -220,7 +221,6 @@ def g_estudiante(request):
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
-# 🚫 DETECTOR INTELIGENTE CORREGIDO: PROCESA RESTRICCIONES SIN CHOCAR CON EL MODELO
 @login_required
 def g_excepcion(request):
     if not request.user.is_superuser:
@@ -242,7 +242,7 @@ def g_excepcion(request):
             conteo_creados = 0
             try:
                 with transaction.atomic():
-                    for dia in range(1, 6): # Bucle seguro de Lunes a Viernes
+                    for dia in range(1, 6): 
                         if not ExcepcionHorario.objects.filter(estudiante=estudiante, dia_semana=dia, turno=turno).exists():
                             ExcepcionHorario.objects.create(estudiante=estudiante, dia_semana=dia, turno=turno)
                             conteo_creados += 1
@@ -257,7 +257,6 @@ def g_excepcion(request):
             except Exception as e:
                 messages.error(request, f"Error en procesamiento masivo: {str(e)}")
         else:
-            # Procesamiento normal de un día individual usando el formulario nativo
             form = ExcepcionForm(request.POST)
             if form.is_valid():
                 form.save()
