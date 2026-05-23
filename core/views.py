@@ -16,7 +16,6 @@ def cartelera_publica(request):
     turnos = TurnoAsignado.objects.all().annotate(
         habitacion_int=Cast('estudiante__habitacion', output_field=IntegerField())
     ).order_by('-fecha', 'habitacion_int', 'estudiante__nombre')
-    
     return render(request, 'core/cartelera.html', {'turnos': turnos})
 
 def registro_admin(request):
@@ -34,10 +33,7 @@ def registro_admin(request):
             codigo_obj.usuario_creado = user
             codigo_obj.save()
 
-            PerfilAdministrador.objects.create(
-                user=user,
-                area_asignada=codigo_obj.area_permitida
-            )
+            PerfilAdministrador.objects.create(user=user, area_asignada=codigo_obj.area_permitida)
 
             HistorialAccion.objects.create(
                 usuario=user,
@@ -88,11 +84,13 @@ def panel_control(request):
     form_estudiante = EstudianteForm()
     form_excepcion = ExcepcionForm()
     
+    # Inyectamos la opción masiva "Todos" dinámicamente en el formulario para no romper el modelo
+    form_excepcion.fields['dia_semana'].choices = [('', '---------'), ('TODOS', 'Todos (Lunes a Viernes)')] + list(ExcepcionHorario.DIA_CHOICES)
+
     form_manual = AsignacionManualForm()
     form_manual.fields['tarea'].queryset = Tarea.objects.filter(area=area)
     
     estudiantes_manual_qs = Estudiante.objects.all()
-    
     if area.nombre == 'BANOS_H':
         estudiantes_manual_qs = estudiantes_manual_qs.filter(genero='M')
     elif area.nombre == 'BANOS_M':
@@ -118,18 +116,11 @@ def panel_control(request):
     fecha_hoy = datetime.date.today().strftime('%Y-%m-%d')
 
     return render(request, 'core/dashboard.html', {
-        'area': area,
-        'turnos': turnos,
-        'areas_disponibles': areas_disponibles,
-        'lista_estudiantes': lista_estudiantes,
-        'query_busqueda': query_busqueda,
-        'form_estudiante': form_estudiante,
-        'form_excepcion': form_excepcion,
-        'form_manual': form_manual,
-        'codigos_registro': codigos_registro,
-        'historial': historial,
-        'fecha_hoy': fecha_hoy,
-        'excepciones': excepciones
+        'area': area, 'turnos': turnos, 'areas_disponibles': areas_disponibles,
+        'lista_estudiantes': lista_estudiantes, 'query_busqueda': query_busqueda,
+        'form_estudiante': form_estudiante, 'form_excepcion': form_excepcion,
+        'form_manual': form_manual, 'codigos_registro': codigos_registro,
+        'historial': historial, 'fecha_hoy': fecha_hoy, 'excepciones': excepciones
     })
 
 
@@ -138,10 +129,7 @@ def acc_generar_rol(request):
     if request.method == 'POST':
         area_id = request.POST.get('area_id')
         if request.user.is_superuser:
-            if area_id and area_id.isdigit():
-                area = get_object_or_404(Area, id=int(area_id))
-            else:
-                area = Area.objects.first()
+            area = get_object_or_404(Area, id=int(area_id)) if area_id and area_id.isdigit() else Area.objects.first()
         else:
             perfil = get_object_or_404(PerfilAdministrador, user=request.user)
             area = perfil.area_asignada
@@ -162,17 +150,15 @@ def acc_generar_rol(request):
         try:
             generar_turnos_para_fecha(fecha, turno_horario, area)
             HistorialAccion.objects.create(
-                usuario=request.user,
-                accion=f"Generó automáticamente el rol del {fecha_str} ({turno_horario})",
+                usuario=request.user, accion=f"Generó automáticamente el rol del {fecha_str} ({turno_horario})",
                 area_origen=area.get_nombre_display()
             )
-            messages.success(request, f"¡Rol generado con éxito para el día {fecha_str}!")
+            messages.success(request, f"¡Rol generado con éxito!")
         except Exception as e:
             messages.error(request, f"Aviso del sistema: {str(e)}")
             
         if request.user.is_superuser:
             return redirect(f'/panel/?area_id={area.id}')
-            
     return redirect('panel_control')
 
 
@@ -190,10 +176,10 @@ def acc_cambiar_estado(request, turno_id, nuevo_estado):
         turno.save()
         HistorialAccion.objects.create(
             usuario=request.user,
-            accion=f"Modificó asistencia de {turno.estudiante.nombre} a [{turno.get_estado_display()}] para el turno del {turno.fecha}",
+            accion=f"Modificó asistencia de {turno.estudiante.nombre} a [{turno.get_estado_display()}]",
             area_origen=turno.tarea.area.get_nombre_display()
         )
-        messages.success(request, f"Estado del turno actualizado a {turno.get_estado_display()}.")
+        messages.success(request, f"Estado del turno actualizado.")
         
     if request.user.is_superuser:
         return redirect(f'/panel/?area_id={turno.tarea.area.id}')
@@ -211,12 +197,11 @@ def acc_borrar_turno(request, turno_id):
             return redirect('panel_control')
             
     HistorialAccion.objects.create(
-        usuario=request.user,
-        accion=f"Eliminó la asignación de {turno.estudiante.nombre} del día {turno.fecha} ({turno.tarea.nombre_tarea})",
+        usuario=request.user, accion=f"Eliminó la asignación de {turno.estudiante.nombre}",
         area_origen=turno.tarea.area.get_nombre_display()
     )
     turno.delete()
-    messages.success(request, "Asignación eliminada. El cupo está libre nuevamente.")
+    messages.success(request, "Asignación eliminada.")
     if request.user.is_superuser:
         return redirect(f'/panel/?area_id={area_id}')
     return redirect('panel_control')
@@ -229,15 +214,13 @@ def g_estudiante(request):
         if form.is_valid():
             estudiante = form.save()
             HistorialAccion.objects.create(
-                usuario=request.user,
-                accion=f"Ingresó al estudiante {estudiante.nombre} (Habitación: {estudiante.habitacion}) al sistema general.",
-                area_origen="Control Global"
+                usuario=request.user, accion=f"Ingresó al estudiante {estudiante.nombre}.", area_origen="Control Global"
             )
-            messages.success(request, "Estudiante agregado exitosamente a las listas.")
+            messages.success(request, "Estudiante agregado exitosamente.")
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
-# 🔒 LOGICA INTERNA MEJORADA: CON CANDADO ATÓMICO ANTI-ERRORES MASIVO
+# 🚫 DETECTOR INTELIGENTE CORREGIDO: PROCESA RESTRICCIONES SIN CHOCAR CON EL MODELO
 @login_required
 def g_excepcion(request):
     if not request.user.is_superuser:
@@ -245,50 +228,46 @@ def g_excepcion(request):
         return redirect('panel_control')
 
     if request.method == 'POST':
-        form = ExcepcionForm(request.POST)
-        if form.is_valid():
-            estudiante = form.cleaned_data['estudiante']
-            dia_semana = form.cleaned_data['dia_semana']
-            turno = form.cleaned_data['turno']
-
-            # 🚀 PROCESAMIENTO GRUPAL: Lunes a Viernes seleccionado (valor 0)
-            if dia_semana == 0:
-                conteo_creados = 0
-                try:
-                    with transaction.atomic():
-                        for dia in range(1, 6): # Bucle limpio del 1 al 5
-                            if not ExcepcionHorario.objects.filter(estudiante=estudiante, dia_semana=dia, turno=turno).exists():
-                                ExcepcionHorario.objects.create(
-                                    estudiante=estudiante,
-                                    dia_semana=dia,
-                                    turno=turno
-                                )
-                                conteo_creados += 1
-                        
-                    if conteo_creados > 0:
-                        HistorialAccion.objects.create(
-                            usuario=request.user,
-                            accion=f"Creó bloqueo masivo (Lun-Vie) para {estudiante.nombre} en el turno {turno}",
-                            area_origen="Control Global"
-                        )
-                        messages.success(request, f"¡Éxito! Se registraron {conteo_creados} bloqueos automáticos (Lunes a Viernes) para {estudiante.nombre}.")
-                    else:
-                        messages.warning(request, "Aviso: El estudiante ya tenía bloqueos asignados para todos los días hábiles individuales.")
-                except Exception as e:
-                    messages.error(request, f"Error crítico al procesar la carga masiva: {str(e)}")
+        raw_dia = request.POST.get('dia_semana')
+        estudiante_id = request.POST.get('estudiante')
+        turno = request.POST.get('turno')
+        
+        if not estudiante_id or not turno:
+            messages.error(request, "Formulario inválido.")
+            return redirect('panel_control')
             
-            else:
-                # Flujo estándar si se guarda un único día
+        estudiante = get_object_or_404(Estudiante, id=int(estudiante_id))
+
+        if raw_dia == 'TODOS':
+            conteo_creados = 0
+            try:
+                with transaction.atomic():
+                    for dia in range(1, 6): # Bucle seguro de Lunes a Viernes
+                        if not ExcepcionHorario.objects.filter(estudiante=estudiante, dia_semana=dia, turno=turno).exists():
+                            ExcepcionHorario.objects.create(estudiante=estudiante, dia_semana=dia, turno=turno)
+                            conteo_creados += 1
+                
+                if conteo_creados > 0:
+                    HistorialAccion.objects.create(
+                        usuario=request.user, accion=f"Creó bloqueo masivo para {estudiante.nombre} en turno {turno}", area_origen="Control Global"
+                    )
+                    messages.success(request, f"¡Éxito! Se registraron {conteo_creados} bloqueos para {estudiante.nombre}.")
+                else:
+                    messages.warning(request, "El estudiante ya tenía bloqueados todos estos días.")
+            except Exception as e:
+                messages.error(request, f"Error en procesamiento masivo: {str(e)}")
+        else:
+            # Procesamiento normal de un día individual usando el formulario nativo
+            form = ExcepcionForm(request.POST)
+            if form.is_valid():
                 form.save()
                 HistorialAccion.objects.create(
-                    usuario=request.user,
-                    accion=f"Creó un bloqueo horario académico para {estudiante.nombre} el día {form.instance.get_dia_semana_display()}",
-                    area_origen="Control Global"
+                    usuario=request.user, accion=f"Creó bloqueo académico para {estudiante.nombre}.", area_origen="Control Global"
                 )
                 messages.success(request, "Excepción de horario académica guardada.")
-        else:
-            messages.error(request, "Error: Es posible que este alumno ya tenga esa excepción registrada.")
-            
+            else:
+                messages.error(request, "Error: Es posible que esta excepción ya exista.")
+                
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
@@ -303,12 +282,10 @@ def acc_borrar_excepcion(request, excepcion_id):
     dia_str = excepcion.get_dia_semana_display()
     
     HistorialAccion.objects.create(
-        usuario=request.user,
-        accion=f"Eliminó bloqueo académico de {nombre_estudiante} para el día {dia_str}",
-        area_origen="Control Global"
+        usuario=request.user, accion=f"Eliminó bloqueo académico de {nombre_estudiante} para el día {dia_str}", area_origen="Control Global"
     )
     excepcion.delete()
-    messages.success(request, f"Bloqueo horario de {nombre_estudiante} eliminado correctamente.")
+    messages.success(request, f"Bloqueo horario eliminado correctamente.")
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
@@ -319,31 +296,22 @@ def g_manual(request):
         turno_horario = request.POST.get('turno_contexto')
         post_data = request.POST.copy()
         
-        if fecha_str:
-            post_data['fecha'] = fecha_str
-        else:
-            post_data['fecha'] = datetime.date.today().strftime('%Y-%m-%d')
-            
-        if turno_horario:
-            post_data['turno_horario'] = turno_horario
-        else:
-            post_data['turno_horario'] = 'NOCHE'
+        post_data['fecha'] = fecha_str if fecha_str else datetime.date.today().strftime('%Y-%m-%d')
+        post_data['turno_horario'] = turno_horario if turno_horario else 'NOCHE'
             
         form = AsignacionManualForm(post_data)
         if form.is_valid():
             turno = form.save()
             area_obj = turno.tarea.area
             HistorialAccion.objects.create(
-                usuario=request.user,
-                accion=f"Asignó MANUALMENTE a {turno.estudiante.nombre} para la tarea '{turno.tarea.nombre_tarea}'",
-                area_origen=str(area_obj)
+                usuario=request.user, accion=f"Asignó MANUALMENTE a {turno.estudiante.nombre}", area_origen=str(area_obj)
             )
-            messages.success(request, "¡Asignación manual registrada con éxito!")
+            messages.success(request, "¡Asignación manual registrada!")
             if request.user.is_superuser:
                 return redirect(f'/panel/?area_id={area_obj.id}')
         else:
             errores = ", ".join([f"{k}: {v[0]}" for k, v in form.errors.items()])
-            messages.error(request, f"No se pudo asignar a dedo. Errores: {errores}")
+            messages.error(request, f"Error al asignar: {errores}")
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
@@ -362,11 +330,9 @@ def g_codigo(request):
             else:
                 CodigoRegistro.objects.create(codigo=codigo, area_permitida=area_obj)
                 HistorialAccion.objects.create(
-                    usuario=request.user,
-                    accion=f"Generó el código de acceso '{codigo}' para reclutar un admin de {area_obj.get_nombre_display()}",
-                    area_origen="Control Global"
+                    usuario=request.user, accion=f"Generó el código de acceso '{codigo}'", area_origen="Control Global"
                 )
-                messages.success(request, f"Código '{codigo}' generado con éxito.")
+                messages.success(request, f"Código '{codigo}' generado.")
     return redirect(request.META.get('HTTP_REFERER', 'panel_control'))
 
 
@@ -378,11 +344,9 @@ def editar_estudiante(request, estudiante_id):
         if form.is_valid():
             form.save()
             HistorialAccion.objects.create(
-                usuario=request.user,
-                accion=f"Editó los datos del estudiante {estudiante.nombre}.",
-                area_origen="Control Global"
+                usuario=request.user, accion=f"Editó los datos de {estudiante.nombre}.", area_origen="Control Global"
             )
-            messages.success(request, f"Datos de {estudiante.nombre} actualizados con éxito.")
+            messages.success(request, f"Datos actualizados con éxito.")
             return redirect('panel_control')
     else:
         form = EstudianteForm(instance=estudiante)
@@ -393,10 +357,8 @@ def editar_estudiante(request, estudiante_id):
 def borrar_estudiante(request, estudiante_id):
     student = get_object_or_404(Estudiante, id=estudiante_id)
     HistorialAccion.objects.create(
-        usuario=request.user,
-        accion=f"ELIMINÓ permanentemente al estudiante {student.nombre} del sistema.",
-        area_origen="Control Global"
+        usuario=request.user, accion=f"ELIMINÓ permanentemente a {student.nombre}.", area_origen="Control Global"
     )
-    messages.warning(request, f"El estudiante {student.nombre} fue eliminado de las listas.")
+    messages.warning(request, f"El estudiante {student.nombre} fue eliminado.")
     student.delete()
     return redirect('panel_control')
